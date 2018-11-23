@@ -31,4 +31,5 @@ app.post('/pushorder',orders);
 
 app.listen(port, function() {
 	console.log('Example app listening on port ' + port + ' !');
+	console.log('cors option', config.CORS_OPTIONS);
 });

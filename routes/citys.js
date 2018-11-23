@@ -4,13 +4,11 @@ var router = express.Router();
 var jwt = require('jsonwebtoken');
 var mysql = require('mysql') ;
 var cors = require('cors');
-var environment = process.env;
 
 router.use(cors(config.CORS_OPTIONS));
 
 
 router.post('/citys', function(req, res) {
-    console.log('prooossset', environment);
     var con = mysql.createConnection(config.MYSQL_OPTION);
     con.connect(function(err) {
         if (err) {
