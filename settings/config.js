@@ -4,14 +4,14 @@ var conf = convict({
     env: {
         doc: "The applicaton environment.",
         format: ["production", "development"],
-        default: "development",
+        default: "production",
         env: "NODE_ENV"
     },
     CORS: {
         doc: 'The domen',
-        format: ['http://localhost:4200', 'https://pure-ocean-58040.herokuapp.com'],
+        format: 'url',
         default: {
-            origin: 'http://localhost:4200',
+            origin: 'https://pure-ocean-58040.herokuapp.com',
             optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
         },
         env: "NODE_ENV"
@@ -22,7 +22,7 @@ if (conf.get('env') === 'production') {
     // в боевом окружении используем другой порт и сервер БД
     conf.load({
         CORS: {
-            origin: 'https://pure-ocean-58040.herokuapp.com',
+            origin: 'http://localhost:4200',
         }
     });
 }
