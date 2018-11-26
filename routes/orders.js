@@ -9,7 +9,7 @@ var nodemailer = require('nodemailer') ;
 router.use(cors(config.CORS_OPTIONS));
 
 
-router.post('/pushorder', function(req, res) {
+router.post('/order', function(req, res) {
     if (req.body.client.length < 3) {
         res.status(403).json({ success: false, error: true, data: 'not validation' });
         return
@@ -145,7 +145,7 @@ router.post('/pushorder', function(req, res) {
 });
 
 
-router.post('/getorders', function(req, res) {
+router.get('/order', function(req, res) {
     var con = mysql.createConnection(config.MYSQL_OPTION);
     con.connect(function(err) {
         if (err) {
@@ -168,7 +168,7 @@ router.post('/getorders', function(req, res) {
     });
 });
 
-router.put('/editorder' , function(req, res) {
+router.put('/order' , function(req, res) {
     var start = new Date(req.body.datetime) ;
     var end = new Date(req.body.datetime) ;
     end.setHours(end.getHours() + Number(req.body.size))

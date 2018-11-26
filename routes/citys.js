@@ -8,7 +8,7 @@ var cors = require('cors');
 router.use(cors(config.CORS_OPTIONS));
 
 
-router.post('/citys', function(req, res) {
+router.get('/city', function(req, res) {
     var con = mysql.createConnection(config.MYSQL_OPTION);
     con.connect(function(err) {
         if (err) {
@@ -28,8 +28,7 @@ router.post('/citys', function(req, res) {
 });
 
 
-router.post('/pushcity', function(req, res) {
-    console.log('new city init') ;
+router.post('/city', function(req, res) {
     var con = mysql.createConnection(config.MYSQL_OPTION);
     con.connect(function(err) {
         if (err) {
@@ -51,7 +50,7 @@ router.post('/pushcity', function(req, res) {
 });
 
 
-router.put('/editcity' , function(req, res) {
+router.put('/city' , function(req, res) {
     console.log(req.body.newcity) ;
     var con = mysql.createConnection(config.MYSQL_OPTION);
     con.connect(function(err) {

@@ -8,17 +8,17 @@ var cors = require('cors');
 router.use(cors(config.CORS_OPTIONS));
 
 
-router.post('/letmasters', function(req, res) {
-    var start = new Date(req.body.datetime) ;
-    var end = new Date(req.body.datetime) ;
-    end.setHours(end.getHours() + Number(req.body.size))
+router.get('/getfreemasters', function(req, res) {
+    var start = new Date(req.headers.datetime) ;
+    var end = new Date(req.headers.datetime) ;
+    end.setHours(end.getHours() + Number(req.headers.size))
     var con = mysql.createConnection(config.MYSQL_OPTION);
     con.connect(function(err) {
         if (err) {
             res.status(501).json({ success: false, error: 1, data: 'not connected! to database' });
             return ;
         }
-        var sql = "SELECT * FROM masters WHERE masters.city = " + mysql.escape(req.body.city) +"\n"
+        var sql = "SELECT * FROM masters WHERE masters.city = " + mysql.escape(decodeURI(req.headers.city)) +"\n"
             + "AND id NOT IN (" +"\n"
             + "SELECT idmaster FROM orders WHERE start <= "  + mysql.escape(start) + " AND " + mysql.escape(start) + " <= end" +"\n"
             + "OR start <= "  + mysql.escape(end) + " AND " + mysql.escape(end) + " <= end)" ;
@@ -36,14 +36,14 @@ router.post('/letmasters', function(req, res) {
 });
 
 
-router.post('/masters', function(req, res) {
+router.get('/master', function(req, res) {
     var con = mysql.createConnection(config.MYSQL_OPTION);
     con.connect(function(err) {
         if (err) {
             res.status(501).json({ success: false, error: true, data: 'not connected! to database' });
             return ;
         }
-        var sql = 'SELECT * FROM masters LIMIT 10' ;
+        var sql = 'SELECT * FROM masters' ;
         con.query(sql, function (err, result) {
 			con.end() ;
             if (err) {
@@ -55,7 +55,7 @@ router.post('/masters', function(req, res) {
     });
 });
 
-router.post('/pushmaster', function(req, res) {
+router.post('/master', function(req, res) {
     var con = mysql.createConnection(config.MYSQL_OPTION);
     con.connect(function(err) {
         if (err) {
@@ -79,7 +79,7 @@ router.post('/pushmaster', function(req, res) {
     });
 });
 
-router.put('/editmaster' , function(req, res) {
+router.put('/master' , function(req, res) {
     var con = mysql.createConnection(config.MYSQL_OPTION);
     con.connect(function(err) {
         if (err) {

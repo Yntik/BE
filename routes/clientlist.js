@@ -8,7 +8,8 @@ var cors = require('cors');
 router.use(cors(config.CORS_OPTIONS));
 
 
-router.post('/clientlist', function(req, res) {
+router.get('/client', function(req, res) {
+    console.log('CLIENT LIST')
     var con = mysql.createConnection(config.MYSQL_OPTION);
     con.connect(function(err) {
         if (err) {
@@ -28,7 +29,7 @@ router.post('/clientlist', function(req, res) {
 });
 
 
-router.put('/editclient' , function(req, res) {
+router.put('/client' , function(req, res) {
     var con = mysql.createConnection(config.MYSQL_OPTION);
     console.log('edit client init') ;
     console.log(req.body) ;

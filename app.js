@@ -23,13 +23,12 @@ app.use(bodyParser.urlencoded({
 
 app.use('/protected', protected);
 app.post('/login', protected.authenticate);
-app.post('/citys',citys) ;
-app.post('/letmasters',masters);
-app.post('/pushorder',orders);
+app.get('/city',citys) ;
+app.get('/getfreemasters',masters);
+app.post('/order',orders);
 
 
 
 app.listen(port, function() {
 	console.log('Example app listening on port ' + port + ' !');
-	console.log('cors option', config.CORS_OPTIONS);
 });

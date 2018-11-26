@@ -11,21 +11,21 @@ const orders = require('./orders') ;
 const clients = require('./clientlist') ;
 
 
-router.post('/masters', masters) ;
-router.post('/pushmaster', masters) ;
-router.put('/editmaster', masters) ;
+router.get('/master', masters) ;
+router.post('/master', masters) ;
+router.put('/master', masters) ;
 
 
-router.post('/pushcity', citys) ;
-router.put('/editcity', citys) ;
+router.post('/city', citys) ;
+router.put('/city', citys) ;
 
 
-router.post('/getorders', orders) ;
-router.put('/editorder', orders) ;
+router.get('/order', orders) ;
+router.put('/order', orders) ;
 
 
-router.post('/clientlist', clients) ;
-router.put('/editclient', clients) ;
+router.get('/client', clients) ;
+router.put('/client', clients) ;
 
 
 router.use(cors(config.CORS_OPTIONS));
@@ -76,7 +76,7 @@ router.authenticate = function(req, res) {
 
 // MIDDLEWARE
 router.use(function(req, res, next) {
-    var token = req.body.token || req.headers["token"];
+    var token = req.body.token || req.headers.token;
     if (token) {
         jwt.verify(token, config.JWT_SECRET_KEY, function(err) {
             if (err) {
@@ -113,7 +113,7 @@ router.post('/checktoken', function(req, res) {
 
 
 
-router.post('/delete', function(req, res) {
+router.delete('/delete', function(req, res) {
     console.log('delete init') ;
     var con = mysql.createConnection(config.MYSQL_OPTION);
     con.connect(function(err) {
@@ -122,8 +122,8 @@ router.post('/delete', function(req, res) {
             return ;
         }
         var sql = "DELETE FROM "
-            + req.body.route
-            + " WHERE id = "+ mysql.escape(req.body.id) ;
+            + req.headers.route
+            + " WHERE id = "+ mysql.escape(Number(req.headers.id)) ;
         console.log(sql) ;
         con.query(sql, function (err, result) {
 			con.end() ;
