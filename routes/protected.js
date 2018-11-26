@@ -90,7 +90,7 @@ router.use(function(req, res, next) {
     }
 });
 
-router.post('/checktoken', function(req, res) {
+router.get('/checktoken', function(req, res) {
     var token = req.body.token || req.headers['token'];
     console.log("chektoken", token) ;
     if (token) {
