@@ -25,8 +25,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/routes/protected.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1071">
-              <caret line="90" column="3" selection-start-line="90" selection-start-column="3" selection-end-line="90" selection-end-column="3" />
+            <state relative-caret-position="187">
+              <caret line="14" column="33" selection-start-line="14" selection-start-column="32" selection-end-line="14" selection-end-column="33" />
             </state>
           </provider>
         </entry>
@@ -76,7 +76,7 @@
     </findStrings>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -207,12 +207,12 @@
       <workItem from="1542807461371" duration="11000" />
       <workItem from="1542876128326" duration="2670000" />
       <workItem from="1542967221085" duration="9620000" />
-      <workItem from="1543249842412" duration="1253000" />
+      <workItem from="1543249842412" duration="2191000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="193116000" />
+    <option name="totallyTimeSpent" value="194054000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -309,8 +309,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/routes/protected.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1071">
-          <caret line="90" column="3" selection-start-line="90" selection-start-column="3" selection-end-line="90" selection-end-column="3" />
+        <state relative-caret-position="187">
+          <caret line="14" column="33" selection-start-line="14" selection-start-column="32" selection-end-line="14" selection-end-column="33" />
         </state>
       </provider>
     </entry>
