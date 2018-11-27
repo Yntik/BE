@@ -7,6 +7,7 @@ var mysql = require('mysql') ;
 
 const masters = require('./masters') ;
 const citys = require('./citys') ;
+const price = require('./price')
 const orders = require('./orders') ;
 const clients = require('./clientlist') ;
 
@@ -18,6 +19,10 @@ router.put('/master', masters) ;
 
 router.post('/city', citys) ;
 router.put('/city', citys) ;
+
+
+router.post('/price', price) ;
+router.put('/price', price) ;
 
 
 router.get('/order', orders) ;

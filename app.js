@@ -4,9 +4,10 @@ var express = require('express');
 var cors = require('cors');
 var bodyParser = require('body-parser');
 
-const citys = require('./routes/citys') ;
-const masters = require('./routes/masters') ;
-const orders = require('./routes/orders') ;
+const citys = require('./routes/citys');
+const price = require('./routes/price');
+const masters = require('./routes/masters');
+const orders = require('./routes/orders');
 
 
 var app = express();
@@ -24,6 +25,7 @@ app.use(bodyParser.urlencoded({
 app.use('/protected', protected);
 app.post('/login', protected.authenticate);
 app.get('/city',citys) ;
+app.get('/price',price) ;
 app.get('/getfreemasters',masters);
 app.post('/order',orders);
 

@@ -83,12 +83,13 @@ router.post('/order', function(req, res) {
                     res.status(501).json({ success: false, error: 1, data: 'not connected! to database' });
                     return ;
                 }
-                var sql = "INSERT INTO orders (client, email, size, city, idmaster, start, end) VALUES (\n"
+                var sql = "INSERT INTO orders (client, email, size, city, idmaster, price, start, end) VALUES (\n"
                     + mysql.escape(req.body.client) + ','
                     + mysql.escape(req.body.email) + ','
                     + mysql.escape(req.body.size) + ','
                     + mysql.escape(req.body.city) + ','
                     + mysql.escape(Number(req.body.master.id)) + ','
+                    + mysql.escape(req.body.price) + ','
                     + mysql.escape(start) + ','
                     + mysql.escape(end) + ") ;" ;
                 con.query(sql, function (err, result) {
@@ -152,7 +153,7 @@ router.get('/order', function(req, res) {
             res.status(501).json({ success: false, error: 1, data: 'not connected! to database' });
             return ;
         }
-        var sql = 'SELECT masters.name, orders.id, orders.client, orders.email, orders.size, orders.city, orders.idmaster, orders.start, orders.end\n '
+        var sql = 'SELECT masters.name, orders.id, orders.client, orders.email, orders.size, orders.city, orders.idmaster, orders.price, orders.start, orders.end\n '
             + "FROM orders\n"
             + "LEFT JOIN masters ON orders.idmaster = masters.id\n "
             + "ORDER BY orders.start DESC"
@@ -178,13 +179,14 @@ router.put('/order' , function(req, res) {
             res.status(501).json({ success: false, error: 1, data: 'not connected! to database' });
             return ;
         }
-        var sql = 'UPDATE orders SET client = ?, email = ?, size = ?, city = ?, idmaster = ?, start = ?, end = ?  WHERE id   = ?';
+        var sql = 'UPDATE orders SET client = ?, email = ?, size = ?, city = ?, idmaster = ?, price = ?, start = ?, end = ?  WHERE id   = ?';
         con.query(sql, [
             req.body.client,
             req.body.email,
             req.body.size,
             req.body.city,
             req.body.idmaster,
+            req.body.price,
             start,
             end,
             req.body.id
