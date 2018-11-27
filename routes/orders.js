@@ -153,7 +153,7 @@ router.get('/order', function(req, res) {
             res.status(501).json({ success: false, error: 1, data: 'not connected! to database' });
             return ;
         }
-        var sql = 'SELECT masters.name, orders.id, orders.client, orders.email, orders.size, orders.city, orders.idmaster, orders.price, orders.start, orders.end\n '
+        var sql = 'SELECT masters.name, masters.surname, masters.rating, orders.id, orders.client, orders.email, orders.size, orders.city, orders.idmaster, orders.price, orders.start, orders.end\n '
             + "FROM orders\n"
             + "LEFT JOIN masters ON orders.idmaster = masters.id\n "
             + "ORDER BY orders.start DESC"

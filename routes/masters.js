@@ -18,10 +18,20 @@ router.get('/getfreemasters', function(req, res) {
             res.status(501).json({ success: false, error: 1, data: 'not connected! to database' });
             return ;
         }
-        var sql = "SELECT * FROM masters WHERE masters.city = " + mysql.escape(decodeURI(req.headers.city)) +"\n"
-            + "AND id NOT IN (" +"\n"
-            + "SELECT idmaster FROM orders WHERE start <= "  + mysql.escape(start) + " AND " + mysql.escape(start) + " <= end" +"\n"
-            + "OR start <= "  + mysql.escape(end) + " AND " + mysql.escape(end) + " <= end)" ;
+        var sql = ''
+        if (req.headers.option === 'new') {
+            sql = "SELECT * FROM masters WHERE masters.city = " + mysql.escape(decodeURI(req.headers.city)) +"\n"
+                + "AND id NOT IN (" +"\n"
+                + "SELECT idmaster FROM orders WHERE start <= "  + mysql.escape(start) + " AND " + mysql.escape(start) + " <= end" +"\n"
+                + "OR start <= "  + mysql.escape(end) + " AND " + mysql.escape(end) + " <= end )" ;
+        }
+        else {
+            sql = "SELECT * FROM masters WHERE masters.city = " + mysql.escape(decodeURI(req.headers.city)) +"\n"
+                + "AND id NOT IN (" +"\n"
+                + "SELECT idmaster FROM orders WHERE (start <= "  + mysql.escape(start) + " AND " + mysql.escape(start) + " <= end" +"\n"
+                + "OR start <= "  + mysql.escape(end) + " AND " + mysql.escape(end) + " <= end) AND NOT id = " + mysql.escape(Number(req.headers.option)) + ")" ;
+        }
+        console.log('sql--->', sql)
         con.query(sql, function (err, result) {
 			con.end() ;
             if (err) {
@@ -29,6 +39,7 @@ router.get('/getfreemasters', function(req, res) {
                 res.status(501).json({ success: false, error: true, data: 'truble of database' });
                 return ;
             }
+            console.log('result', result)
             res.status(200).json({ success: true, error: false, data: result });
 
         });
