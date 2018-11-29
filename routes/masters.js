@@ -2,7 +2,7 @@ const config = require('../settings/config');
 var express = require('express');
 var router = express.Router();
 var jwt = require('jsonwebtoken');
-var mysql = require('mysql') ;
+var mysql = require('mysql');
 var cors = require('cors');
 
 router.use(cors(config.CORS_OPTIONS));
