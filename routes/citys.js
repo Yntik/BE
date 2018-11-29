@@ -1,17 +1,18 @@
 const config = require('../settings/config');
 var express = require('express');
+var mysql = require('mysql');
 var router = express.Router();
 var jwt = require('jsonwebtoken');
 var cors = require('cors');
-const mysql = require('../settings/MYSQL');
+const MYSQL = require('../settings/MYSQL');
 
 router.use(cors(config.CORS_OPTIONS));
 
 
 router.get('/city', function(req, res) {
-   new mysql().getCon((connection) =>{
+   new MYSQL().getCon((con) =>{
         var sql = 'SELECT * FROM citys';
-        connection.query(sql, function (err, result) {
+        con.query(sql, function (err, result) {
             if (err) {
                 res.status(501).json({success: false, error: true, data: 'truoble of database'});
                 return;
@@ -23,44 +24,30 @@ router.get('/city', function(req, res) {
 
 
 router.post('/city', function(req, res) {
-    var con = mysql.createConnection(config.MYSQL_OPTION);
-    con.connect(function(err) {
-        if (err) {
-            res.status(501).json({ success: false, error: 1, data: 'not connected! to database' });
-            return ;
-        }
+    new MYSQL().getCon((con) => {
         var sql = "INSERT INTO citys (city) VALUES ("
             + mysql.escape(req.body.newcity) + ")";
         con.query(sql, function (err, result) {
-			con.end() ;
             if (err) {
                 res.status(501).json({ success: false, error: true, data: 'truble of database' });
-                return ;
-            }
-            res.status(200).json({ success: true, error: false, data: result });
+                    return ;
+                }
+                res.status(200).json({ success: true, error: false, data: result });
 
+            });
         });
-    });
 });
 
 
 router.put('/city' , function(req, res) {
-    console.log(req.body.newcity) ;
-    var con = mysql.createConnection(config.MYSQL_OPTION);
-    con.connect(function(err) {
-        if (err) {
-            res.status(501).json({ success: false, error: 1, data: 'not connected! to database' });
-            return ;
-        }
+    new MYSQL().getCon((con) => {
         var sql = 'UPDATE citys SET city = ? WHERE id = ?';
-        console.log(sql) ;
         con.query(sql, [
             req.body.newcity,
             req.body.id
         ], function (err, result) {
-			con.end() ;
             if (err) {
-                res.status(501).json({ success: false, error: true, data: 'truble of database' });
+                res.status(501).json({ success: false, error: true, data: 'trouble of database' });
                 return ;
             }
             res.status(200).json({ success: true, error: false, data: result });

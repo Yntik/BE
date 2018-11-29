@@ -6,13 +6,13 @@ var pool = mysql.createPool(config.POOL_OPTION);
 function MySQL() {
 
     this.getCon = function (next) {
-        pool.getConnection(function (err, connection) {
+        pool.getConnection(function (err, con) {
             if (err) {
                 console.log(err);
                 callback(true);
                 return;
             }
-            next(connection);
+            next(con);
         })
     }
 
