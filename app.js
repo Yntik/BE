@@ -1,5 +1,4 @@
 const config = require('./settings/config');
-const mysql = require('./settings/MYSQL');
 var protected = require('./routes/protected');
 var express = require('express');
 var cors = require('cors');
@@ -16,12 +15,15 @@ var port = process.env.PORT || config.BACK_END_PORT;
 
 
 
-
 app.use(bodyParser.json());
 app.use(cors(config.CORS_OPTIONS));
 app.use(bodyParser.urlencoded({
     extended: false
 }));
+
+
+
+
 
 
 app.use('/protected', protected);

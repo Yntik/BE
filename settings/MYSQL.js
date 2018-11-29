@@ -1,29 +1,38 @@
 var mysql = require('mysql');
-var config = require('./config');
+var config = require('./MYSQL_OPTION');
 
-
-
-var con;
+var pool = mysql.createPool(config.POOL_OPTION);
 
 function MySQL() {
 
-    this.create = function() {
-        con = mysql.createConnection(config.MYSQL_OPTION);
-        con.connect(function (err) {
+    this.getCon = function (next) {
+        pool.getConnection(function (err, connection) {
             if (err) {
-                console.log({success: false, error: 1, data: 'not connected to database!'});
-                return {success: false, error: 1, data: 'not connected to database!'};
+                console.log(err);
+                callback(true);
+                return;
             }
-            return {success: true, error: false, data: 'connected to database!'};
-        });
+            next(connection);
+        })
+    }
+
+    /*
+    this.create = function() {
+        console.log('create init')
+        con = mysql.createConnection(config.MYSQL_OPTION);
     }
 
     this.getConnection = function () {
-        if(con.isConnected === true) return {success: true, con: con, data: 'connected to database!'};
-        let result = this.create();
-        if (result.success) return {success: true, con: con, data: 'connected to database!'};
-        else return {success: false, data: 'not connected to database!'};
+        console.log(con);
+        con.connect((this.create),(err) => {
+            if(err) {
+                this.create();
+                return con ;
+            }
+            return con ;
+        });
     }
+    */
 }
 
 
