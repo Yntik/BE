@@ -8,28 +8,30 @@ var cors = require('cors');
 router.use(cors(config.CORS_OPTIONS));
 
 
-router.get('/getfreemasters', function(req, res) {
-    var start = new Date(req.headers.datetime) ;
-    var end = new Date(req.headers.datetime) ;
-    end.setHours(end.getHours() + Number(req.headers.size))
+router.get('/free-master', function(req, res) {
+    var start = new Date(String(req.query.datetime)) ;
+    var end = new Date(String(req.query.datetime)) ;
+    end.setHours(end.getHours() + Number(req.query.size))
+
     var con = mysql.createConnection(config.MYSQL_OPTION);
+
     con.connect(function(err) {
         if (err) {
             res.status(501).json({ success: false, error: 1, data: 'not connected! to database' });
             return ;
         }
         var sql = ''
-        if (req.headers.option === 'new') {
-            sql = "SELECT * FROM masters WHERE masters.city = " + mysql.escape(decodeURI(req.headers.city)) +"\n"
+        if (req.query.option === 'new') {
+            sql = "SELECT * FROM masters WHERE masters.city = " + mysql.escape(decodeURI(req.query.city)) +"\n"
                 + "AND id NOT IN (" +"\n"
                 + "SELECT idmaster FROM orders WHERE start <= "  + mysql.escape(start) + " AND " + mysql.escape(start) + " <= end" +"\n"
                 + "OR start <= "  + mysql.escape(end) + " AND " + mysql.escape(end) + " <= end )" ;
         }
         else {
-            sql = "SELECT * FROM masters WHERE masters.city = " + mysql.escape(decodeURI(req.headers.city)) +"\n"
+            sql = "SELECT * FROM masters WHERE masters.city = " + mysql.escape(decodeURI(req.query.city)) +"\n"
                 + "AND id NOT IN (" +"\n"
                 + "SELECT idmaster FROM orders WHERE (start <= "  + mysql.escape(start) + " AND " + mysql.escape(start) + " <= end" +"\n"
-                + "OR start <= "  + mysql.escape(end) + " AND " + mysql.escape(end) + " <= end) AND NOT id = " + mysql.escape(Number(req.headers.option)) + ")" ;
+                + "OR start <= "  + mysql.escape(end) + " AND " + mysql.escape(end) + " <= end) AND NOT id = " + mysql.escape(Number(req.query.option)) + ")" ;
         }
         console.log('sql--->', sql)
         con.query(sql, function (err, result) {

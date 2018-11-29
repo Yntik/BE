@@ -26,7 +26,7 @@ app.use('/protected', protected);
 app.post('/login', protected.authenticate);
 app.get('/city',citys) ;
 app.get('/price',price) ;
-app.get('/getfreemasters',masters);
+app.get('/free-master',masters);
 app.post('/order',orders);
 
 

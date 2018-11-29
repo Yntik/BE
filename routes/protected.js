@@ -119,7 +119,13 @@ router.get('/checktoken', function(req, res) {
 
 
 router.delete('/delete', function(req, res) {
-    console.log('delete init') ;
+    console.log('delete init');
+
+    var arrayValidation = ['masters', 'citys', 'orders', 'clients', 'price'] ;
+    if (arrayValidation.indexOf(req.query.route) === -1) {
+        res.status(403).json({ success: false, error: true, data: 'operation of remove not possible' });
+        return ;
+    }
     var con = mysql.createConnection(config.MYSQL_OPTION);
     con.connect(function(err) {
         if (err) {
@@ -127,8 +133,8 @@ router.delete('/delete', function(req, res) {
             return ;
         }
         var sql = "DELETE FROM "
-            + req.headers.route
-            + " WHERE id = "+ mysql.escape(Number(req.headers.id)) ;
+            + req.query.route
+            + " WHERE id = "+ mysql.escape(Number(req.query.id)) ;
         console.log(sql) ;
         con.query(sql, function (err, result) {
 			con.end() ;

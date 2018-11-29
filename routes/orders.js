@@ -10,6 +10,7 @@ router.use(cors(config.CORS_OPTIONS));
 
 
 router.post('/order', function(req, res) {
+    console.log(req.body.datetime);
     if (req.body.client.length < 3) {
         res.status(403).json({ success: false, error: true, data: 'not validation' });
         return
