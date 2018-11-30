@@ -42,7 +42,7 @@ router.post('/order', function(req, res) {
         con.query(sql, function (err, result) {
             con.end() ;
             if (err) {
-                res.status(501).json({ success: false, error: true, data: 'truble of database' });
+                res.status(501).json({ success: false, error: true, data: 'trouble of database' });
                 return ;
             }
             else if (result.length === 0) {
@@ -114,6 +114,7 @@ router.post('/order', function(req, res) {
                         + "city = " +mysql.escape(req.body.city) ;
                     con.query(sql, function (err, result) {
                         con.end() ;
+                        console.log('result',result)
                         if (err) {
                             console.log('err',err) ;
                             res.status(501).json({ success: false, error: true, data: 'truble of database_2' });

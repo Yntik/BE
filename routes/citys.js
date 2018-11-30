@@ -1,35 +1,29 @@
-const config = require('../settings/config');
 var express = require('express');
-var mysql = require('mysql');
 var router = express.Router();
-var jwt = require('jsonwebtoken');
-var cors = require('cors');
-const MYSQL = require('../settings/MYSQL');
+var mysql = require('../models/citys');
 
-router.use(cors(config.CORS_OPTIONS));
+
+
 
 
 router.get('/city', function(req, res) {
-   new MYSQL().getCon((con) =>{
-        var sql = 'SELECT * FROM citys';
-        con.query(sql, function (err, result) {
-            if (err) {
-                res.status(501).json({success: false, error: true, data: 'truoble of database'});
-                return;
-            }
-            res.status(200).json({success: true, error: false, data: result});
-        });
+    var promise = new Promise(mysql.getCitys);
+    promise.then((onfulfilled) => {
+        res.status(200).json(onfulfilled);
+    });
+    promise.catch((onfulfilled) => {
+        res.status(501).json(onfulfilled);
     });
 });
 
 
 router.post('/city', function(req, res) {
-    new MYSQL().getCon((con) => {
+    new mypool().getCon((con) => {
         var sql = "INSERT INTO citys (city) VALUES ("
             + mysql.escape(req.body.newcity) + ")";
         con.query(sql, function (err, result) {
             if (err) {
-                res.status(501).json({ success: false, error: true, data: 'truble of database' });
+                res.status(501).json({ success: false, error: true, data: 'trouble of database' });
                     return ;
                 }
                 res.status(200).json({ success: true, error: false, data: result });
@@ -40,7 +34,7 @@ router.post('/city', function(req, res) {
 
 
 router.put('/city' , function(req, res) {
-    new MYSQL().getCon((con) => {
+    new mypool().getCon((con) => {
         var sql = 'UPDATE citys SET city = ? WHERE id = ?';
         con.query(sql, [
             req.body.newcity,
