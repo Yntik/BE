@@ -7,7 +7,7 @@ var mysql = require('../models/citys');
 
 
 router.get('/city', function(req, res) {
-    var promise = new Promise(mysql.getCitys);
+    var promise = new Promise(mysql.get);
     promise.then((onfulfilled) => {
         res.status(200).json(onfulfilled);
     });
@@ -18,7 +18,11 @@ router.get('/city', function(req, res) {
 
 
 router.post('/city', function(req, res) {
-    new mypool().getCon((con) => {
+
+});
+
+/*
+new mypool().getCon((con) => {
         var sql = "INSERT INTO citys (city) VALUES ("
             + mysql.escape(req.body.newcity) + ")";
         con.query(sql, function (err, result) {
@@ -30,8 +34,7 @@ router.post('/city', function(req, res) {
 
             });
         });
-});
-
+ */
 
 router.put('/city' , function(req, res) {
     new mypool().getCon((con) => {

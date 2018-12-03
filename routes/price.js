@@ -15,8 +15,8 @@ router.get('/price', function(req, res) {
             res.status(501).json({ success: false, error: 1, data: 'not connected! to database' });
             return ;
         }
-        var sql = 'SELECT * FROM price\n'
-            + "ORDER BY price.size";
+        var sql = 'SELECT * FROM product\n'
+            + "ORDER BY product.size";
         con.query(sql, function (err, result) {
             con.end() ;
             if (err) {

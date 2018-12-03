@@ -5,6 +5,7 @@ var pool = MyPool.createPool(config.POOL_OPTION);
 
 let MySQL = {
 
+
     getCon: function (resolve, reject) {
         pool.getConnection(function (err, con) {
             if (err) {

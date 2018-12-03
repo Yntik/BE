@@ -14,24 +14,30 @@ router.get('/free-master', function(req, res) {
     end.setHours(end.getHours() + Number(req.query.size))
 
     var con = mysql.createConnection(config.MYSQL_OPTION);
-
+    console.log(req.query);
     con.connect(function(err) {
         if (err) {
             res.status(501).json({ success: false, error: 1, data: 'not connected! to database' });
             return ;
         }
-        var sql = ''
+        var sql = '';
         if (req.query.option === 'new') {
-            sql = "SELECT * FROM masters WHERE masters.city = " + mysql.escape(decodeURI(req.query.city)) +"\n"
-                + "AND id NOT IN (" +"\n"
+            sql = 'SELECT masters.id, masters.name, masters.surname, masters.idcity, masters.rating, citys.city\n'
+                + "FROM masters\n"
+                + "LEFT JOIN citys ON masters.idcity = citys.id\n"
+                + "WHERE citys.city = " + mysql.escape(decodeURI(req.query.city)) + "\n"
+                + "AND masters.id NOT IN (" +"\n"
                 + "SELECT idmaster FROM orders WHERE start <= "  + mysql.escape(start) + " AND " + mysql.escape(start) + " <= end" +"\n"
                 + "OR start <= "  + mysql.escape(end) + " AND " + mysql.escape(end) + " <= end )" ;
         }
         else {
-            sql = "SELECT * FROM masters WHERE masters.city = " + mysql.escape(decodeURI(req.query.city)) +"\n"
-                + "AND id NOT IN (" +"\n"
+            sql = 'SELECT masters.id, masters.name, masters.surname, masters.idcity, masters.rating, citys.city\n '
+                + "FROM masters\n"
+                + "LEFT JOIN citys ON masters.idcity = citys.id\n"
+                + "WHERE citys.city = " + mysql.escape(decodeURI(req.query.city)) + "\n"
+                + "AND masters.id NOT IN (" +"\n"
                 + "SELECT idmaster FROM orders WHERE (start <= "  + mysql.escape(start) + " AND " + mysql.escape(start) + " <= end" +"\n"
-                + "OR start <= "  + mysql.escape(end) + " AND " + mysql.escape(end) + " <= end) AND NOT id = " + mysql.escape(Number(req.query.option)) + ")" ;
+                + "OR start <= "  + mysql.escape(end) + " AND " + mysql.escape(end) + " <= end) AND NOT orders.id = " + mysql.escape(Number(req.query.option)) + ")" ;
         }
         console.log('sql--->', sql)
         con.query(sql, function (err, result) {
@@ -56,7 +62,11 @@ router.get('/master', function(req, res) {
             res.status(501).json({ success: false, error: true, data: 'not connected! to database' });
             return ;
         }
-        var sql = 'SELECT * FROM masters' ;
+        //var sql = 'SELECT * FROM masters' ;
+        var sql = 'SELECT masters.id, masters.name, masters.surname, masters.rating, masters.idcity, citys.city\n '
+            + "FROM masters\n"
+            + "LEFT JOIN citys ON masters.idcity = citys.id\n"
+            + "ORDER BY masters.rating DESC" ;
         con.query(sql, function (err, result) {
 			con.end() ;
             if (err) {
@@ -69,13 +79,14 @@ router.get('/master', function(req, res) {
 });
 
 router.post('/master', function(req, res) {
+    console.log(req.body);
     var con = mysql.createConnection(config.MYSQL_OPTION);
     con.connect(function(err) {
         if (err) {
             res.status(501).json({ success: false, error: 1, data: 'not connected! to database' });
             return ;
         }
-        var sql = "INSERT INTO masters (name, surname, rating, city) VALUES ("
+        var sql = "INSERT INTO masters (name, surname, rating, idcity) VALUES ("
             + mysql.escape(req.body.name) + ','
             + mysql.escape(req.body.surname) + ','
             + mysql.escape(req.body.rating) + ','
@@ -83,6 +94,7 @@ router.post('/master', function(req, res) {
         con.query(sql, function (err, result) {
 			con.end() ;
             if (err) {
+                console.log(err)
                 res.status(501).json({ success: false, error: true, data: 'truble of database' });
                 return ;
             }
@@ -99,7 +111,7 @@ router.put('/master' , function(req, res) {
             res.status(501).json({ success: false, error: 1, data: 'not connected! to database' });
             return ;
         }
-        var sql = 'UPDATE masters SET name = ?, surname = ?, rating = ?, city = ? WHERE id   = ?';
+        var sql = 'UPDATE masters SET name = ?, surname = ?, rating = ?, idcity = ? WHERE id = ?';
         con.query(sql, [
             req.body.name,
             req.body.surname,

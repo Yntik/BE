@@ -84,7 +84,7 @@ router.post('/order', function(req, res) {
                     res.status(501).json({ success: false, error: 1, data: 'not connected! to database' });
                     return ;
                 }
-                var sql = "INSERT INTO orders (client, email, size, city, idmaster, price, start, end) VALUES (\n"
+                var sql = "INSERT INTO orders (idclient, price, idproduct, idcity, idmaster, start, end) VALUES (\n"
                     + mysql.escape(req.body.client) + ','
                     + mysql.escape(req.body.email) + ','
                     + mysql.escape(req.body.size) + ','
@@ -155,14 +155,18 @@ router.get('/order', function(req, res) {
             res.status(501).json({ success: false, error: 1, data: 'not connected! to database' });
             return ;
         }
-        var sql = 'SELECT masters.name, masters.surname, masters.rating, orders.id, orders.client, orders.email, orders.size, orders.city, orders.idmaster, orders.price, orders.start, orders.end\n '
+        var sql = 'SELECT orders.id, orders.price, orders.start, orders.end, clients.name client, clients.email, masters.name, masters.surname, product.size, citys.city\n '
             + "FROM orders\n"
-            + "LEFT JOIN masters ON orders.idmaster = masters.id\n "
+            + "LEFT JOIN clients ON orders.idclient = clients.id\n"
+            + "LEFT JOIN masters ON orders.idmaster = masters.id\n"
+            + "LEFT JOIN product ON orders.idproduct = product.id\n"
+            + "LEFT JOIN citys ON orders.idcity = citys.id\n"
             + "ORDER BY orders.start DESC"
 
         con.query(sql, function (err, result) {
             con.end() ;
             if (err) {
+                console.log(err)
                 res.status(501).json({ success: false, error: true, data: 'truble of database' });
                 return ;
             }

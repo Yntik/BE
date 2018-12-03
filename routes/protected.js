@@ -139,6 +139,7 @@ router.delete('/delete', function(req, res) {
         con.query(sql, function (err, result) {
 			con.end() ;
             if (err) {
+                console.log(err)
                 res.status(501).json({ success: false, error: true, data: 'truble of database' });
                 return ;
             }
