@@ -25,7 +25,7 @@ router.get('/free-master', function(req, res) {
             sql = 'SELECT masters.id, masters.name, masters.surname, masters.idcity, masters.rating, citys.city\n'
                 + "FROM masters\n"
                 + "LEFT JOIN citys ON masters.idcity = citys.id\n"
-                + "WHERE citys.city = " + mysql.escape(decodeURI(req.query.city)) + "\n"
+                + "WHERE citys.id = " + mysql.escape(decodeURI(req.query.city)) + "\n"
                 + "AND masters.id NOT IN (" +"\n"
                 + "SELECT idmaster FROM orders WHERE start <= "  + mysql.escape(start) + " AND " + mysql.escape(start) + " <= end" +"\n"
                 + "OR start <= "  + mysql.escape(end) + " AND " + mysql.escape(end) + " <= end )" ;
@@ -34,7 +34,7 @@ router.get('/free-master', function(req, res) {
             sql = 'SELECT masters.id, masters.name, masters.surname, masters.idcity, masters.rating, citys.city\n '
                 + "FROM masters\n"
                 + "LEFT JOIN citys ON masters.idcity = citys.id\n"
-                + "WHERE citys.city = " + mysql.escape(decodeURI(req.query.city)) + "\n"
+                + "WHERE citys.id = " + mysql.escape(decodeURI(req.query.city)) + "\n"
                 + "AND masters.id NOT IN (" +"\n"
                 + "SELECT idmaster FROM orders WHERE (start <= "  + mysql.escape(start) + " AND " + mysql.escape(start) + " <= end" +"\n"
                 + "OR start <= "  + mysql.escape(end) + " AND " + mysql.escape(end) + " <= end) AND NOT orders.id = " + mysql.escape(Number(req.query.option)) + ")" ;

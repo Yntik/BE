@@ -10,7 +10,6 @@ router.use(cors(config.CORS_OPTIONS));
 
 
 router.post('/order', function(req, res) {
-    console.log(req.body.datetime);
     if (req.body.client.length < 3) {
         res.status(403).json({ success: false, error: true, data: 'not validation' });
         return
@@ -36,8 +35,8 @@ router.post('/order', function(req, res) {
             + mysql.escape(req.body.master.surname) + ' AND '
             + "masters.rating = "
             + mysql.escape(req.body.master.rating) + ' AND '
-            + "masters.city = "
-            + mysql.escape(req.body.master.city) + " ;";
+            + "masters.idcity = "
+            + mysql.escape(req.body.master.idcity) + " ;";
         console.log(sql) ;
         con.query(sql, function (err, result) {
             con.end() ;
@@ -73,76 +72,86 @@ router.post('/order', function(req, res) {
                     }
                     else if (result.length !== 0) {
                         res.status(403).json({ success: false, error: true, data: 'Master not found' });
-                        return
+                        return;
                     }
 
-
-            console.log('chack master2') ;
-            con = mysql.createConnection(config.MYSQL_OPTION);
-            con.connect(function(err) {
-                if (err) {
-                    res.status(501).json({ success: false, error: 1, data: 'not connected! to database' });
-                    return ;
-                }
-                var sql = "INSERT INTO orders (idclient, price, idproduct, idcity, idmaster, start, end) VALUES (\n"
-                    + mysql.escape(req.body.client) + ','
-                    + mysql.escape(req.body.email) + ','
-                    + mysql.escape(req.body.size) + ','
-                    + mysql.escape(req.body.city) + ','
-                    + mysql.escape(Number(req.body.master.id)) + ','
-                    + mysql.escape(req.body.price) + ','
-                    + mysql.escape(start) + ','
-                    + mysql.escape(end) + ") ;" ;
-                con.query(sql, function (err, result) {
-                    con.end() ;
-                    if (err) {
-                        res.status(501).json({ success: false, error: true, data: 'truble of database_1' });
-                        return ;
-                    }
+                    console.log('chack master2') ;
                     con = mysql.createConnection(config.MYSQL_OPTION);
-                    if (err) {
-                        res.status(501).json({ success: false, error: 1, data: 'not connected! to database' });
-                        return ;
-                    }
-                    console.log(result) ;
-                    var sql = "INSERT INTO clients (name, email, city) VALUES (\n"
-                        + mysql.escape(req.body.client) + ','
-                        + mysql.escape(req.body.email) + ','
-                        + mysql.escape(req.body.city) + ")\n"
-                        + "ON DUPLICATE KEY UPDATE\n"
-                        + "name = "+ mysql.escape(req.body.client) + ','
-                        + "city = " +mysql.escape(req.body.city) ;
-                    con.query(sql, function (err, result) {
-                        con.end() ;
-                        console.log('result',result)
+                    con.connect(function(err) {
                         if (err) {
-                            console.log('err',err) ;
-                            res.status(501).json({ success: false, error: true, data: 'truble of database_2' });
+                            res.status(501).json({ success: false, error: 1, data: 'not connected! to database' });
                             return ;
                         }
-                        var transporter = nodemailer.createTransport({
-                            service: 'Gmail',
-                            auth: {
-                                user: 'clockwiseclockware@gmail.com',
-                                pass: 'passwordsecret'
+                        /* Begin transaction */
+                        con.beginTransaction(function(err) {
+                            if (err) {
+                                res.status(501).json({ success: false, error: true, data: 'trouble of database(1)' });
+                                return ;
                             }
-                        });
-                        console.log('created');
-                        transporter.sendMail({
-                            from: 'clockwiseclockware@gmail.com',
-                            to: req.body.email,
-                            subject: 'Заказ принят!',
-                            text: 'Ваш заказ поступил в обработку!'
-                        });
-                        res.status(200).json({ success: true, error: false, data: result });
+                            sql =  "INSERT INTO clients (name, email, idcity) VALUES (\n"
+                                + mysql.escape(req.body.client) + ', '
+                                + mysql.escape(req.body.email) + ', '
+                                + req.body.city + ")\n"
+                                + "ON DUPLICATE KEY UPDATE\n"
+                                + "name = "+ mysql.escape(req.body.client) + ',\n'
+                                + "idcity =" +req.body.city + ";\n" ;
+                            con.query(sql,function(err, result) {
+                                if (err) {
+                                    con.rollback(function() {
+                                        res.status(501).json({ success: false, error: true, data: 'trouble of database(2)' });
+                                        return;
+                                    });
+                                }
 
+                                var log = result.insertId;
+                                sql = "INSERT INTO orders (idclient, price, idproduct, idcity, idmaster, start, end) VALUES (\n"
+                                    + mysql.escape(log) + ','
+                                    + mysql.escape(req.body.price) + ','
+                                    + mysql.escape(Number(req.body.size)) + ','
+                                    + mysql.escape(Number(req.body.city)) + ','
+                                    + mysql.escape(Number(req.body.master.id)) + ','
+                                    + mysql.escape(start) + ','
+                                    + mysql.escape(end) + ");\n"
+                                con.query(sql, function(err, result) {
+                                    if (err) {
+                                        con.rollback(function() {
+                                            res.status(501).json({ success: false, error: true, data: 'trouble of database(3)' });
+                                            return;
+                                        });
+                                    }
+                                    con.commit(function(err) {
+                                        if (err) {
+                                            con.rollback(function() {
+                                                res.status(501).json({ success: false, error: true, data: 'trouble of database(4)' });
+                                                return;
+                                            });
+                                        }
+                                        console.log('Transaction Complete.');
+                                        con.end();
+                                    });
+                                });
+                            });
                         });
+                        /* End transaction */
+                            console.log(sql);
+                            var transporter = nodemailer.createTransport({
+                                service: 'Gmail',
+                                auth: {
+                                    user: 'clockwiseclockware@gmail.com',
+                                    pass: 'passwordsecret'
+                                }
+                            });
+                            console.log('created');
+                            transporter.sendMail({
+                                from: 'clockwiseclockware@gmail.com',
+                                to: req.body.email,
+                                subject: 'Заказ принят!',
+                                text: 'Ваш заказ поступил в обработку!'
+                            });
+                            res.status(200).json({ success: true, error: false, data: result });
                     });
                 });
-
-
             });
-        });
         });
     });
 });
