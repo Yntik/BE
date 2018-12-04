@@ -8,7 +8,7 @@ var cors = require('cors');
 router.use(cors(config.CORS_OPTIONS));
 
 
-router.get('/price', function(req, res) {
+router.get('/product', function(req, res) {
     var con = mysql.createConnection(config.MYSQL_OPTION);
     con.connect(function(err) {
         if (err) {
@@ -29,14 +29,14 @@ router.get('/price', function(req, res) {
 });
 
 
-router.post('/price', function(req, res) {
+router.post('/product', function(req, res) {
     var con = mysql.createConnection(config.MYSQL_OPTION);
     con.connect(function(err) {
         if (err) {
             res.status(501).json({ success: false, error: 1, data: 'not connected! to database' });
             return ;
         }
-        var sql = "INSERT INTO price (size, price) VALUES ("
+        var sql = "INSERT INTO product (size, price) VALUES ("
             + mysql.escape(req.body.size)+','+ mysql.escape(req.body.price) + ")";
         con.query(sql, function (err, result) {
             con.end() ;
@@ -51,7 +51,7 @@ router.post('/price', function(req, res) {
 });
 
 
-router.put('/price' , function(req, res) {
+router.put('/product' , function(req, res) {
     console.log('new price init') ;
     var con = mysql.createConnection(config.MYSQL_OPTION);
     con.connect(function(err) {
@@ -59,7 +59,7 @@ router.put('/price' , function(req, res) {
             res.status(501).json({ success: false, error: 1, data: 'not connected! to database' });
             return ;
         }
-        var sql = 'UPDATE price SET size = ?, price = ? WHERE id = ?';
+        var sql = 'UPDATE product SET size = ?, price = ? WHERE id = ?';
         console.log(sql) ;
         con.query(sql, [
             Number(req.body.size),

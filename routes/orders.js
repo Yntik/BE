@@ -164,19 +164,19 @@ router.get('/order', function(req, res) {
             res.status(501).json({ success: false, error: 1, data: 'not connected! to database' });
             return ;
         }
-        var sql = 'SELECT orders.id, orders.price, orders.start, orders.end, clients.name client, clients.email, masters.name, masters.surname, product.size, citys.city\n '
+        var sql = 'SELECT orders.id, orders.idclient, orders.idmaster, orders.idcity, orders.idproduct, orders.price, orders.start, orders.end, clients.name client, clients.email, masters.name, masters.surname, product.size, citys.city\n '
             + "FROM orders\n"
             + "LEFT JOIN clients ON orders.idclient = clients.id\n"
             + "LEFT JOIN masters ON orders.idmaster = masters.id\n"
             + "LEFT JOIN product ON orders.idproduct = product.id\n"
             + "LEFT JOIN citys ON orders.idcity = citys.id\n"
-            + "ORDER BY orders.start DESC"
+            + "ORDER BY orders.start DESC";
 
         con.query(sql, function (err, result) {
             con.end() ;
             if (err) {
                 console.log(err)
-                res.status(501).json({ success: false, error: true, data: 'truble of database' });
+                res.status(501).json({ success: false, error: true, data: 'trouble of database' });
                 return ;
             }
             res.status(200).json({ success: true, error: false, data: result });
@@ -185,6 +185,7 @@ router.get('/order', function(req, res) {
 });
 
 router.put('/order' , function(req, res) {
+    console.log(req.body);
     var start = new Date(req.body.datetime) ;
     var end = new Date(req.body.datetime) ;
     end.setHours(end.getHours() + Number(req.body.size))
@@ -194,26 +195,76 @@ router.put('/order' , function(req, res) {
             res.status(501).json({ success: false, error: 1, data: 'not connected! to database' });
             return ;
         }
-        var sql = 'UPDATE orders SET client = ?, email = ?, size = ?, city = ?, idmaster = ?, price = ?, start = ?, end = ?  WHERE id   = ?';
-        con.query(sql, [
-            req.body.client,
-            req.body.email,
-            req.body.size,
-            req.body.city,
-            req.body.idmaster,
-            req.body.price,
-            start,
-            end,
-            req.body.id
-        ], function (err, result) {
-            con.end() ;
+        /* Begin transaction */
+        con.beginTransaction(function(err) {
             if (err) {
-                res.status(501).json({ success: false, error: true, data: 'truble of database' });
+                res.status(501).json({ success: false, error: true, data: 'trouble of database(1)' });
                 return ;
             }
-            res.status(200).json({ success: true, error: false, data: result });
-
+            var sql = 'UPDATE clients SET name = ?, email = ?, idcity = ? WHERE id  = ?';
+            con.query(sql, [
+                req.body.client,
+                req.body.email,
+                Number(req.body.city),
+                 Number(req.body.idclient)
+             ], function(err, result) {
+                if (err) {
+                    con.rollback(function() {
+                        res.status(501).json({ success: false, error: true, data: 'trouble of database(2)' });
+                        return;
+                    });
+                }
+                sql = 'UPDATE orders SET idclient = ?, idcity = ?, idmaster = ?, price = ?, start = ?, end = ?  WHERE id  = ?';
+                con.query(sql, [
+                    Number(req.body.idclient),
+                    Number(req.body.city),
+                    Number(req.body.idmaster),
+                    Number(req.body.price),
+                    start,
+                    end,
+                    Number(req.body.id)
+                ],function(err, result) {
+                    if (err) {
+                        con.rollback(function() {
+                            res.status(501).json({ success: false, error: true, data: 'trouble of database(3)' });
+                            return;
+                        });
+                    }
+                    con.commit(function(err) {
+                        if (err) {
+                            con.rollback(function() {
+                                res.status(501).json({ success: false, error: true, data: 'trouble of database(4)' });
+                                return;
+                            });
+                        }
+                        res.status(200).json({ success: true, error: false, data: result });
+                        console.log('Transaction Complete.');
+                        con.end();
+                    });
+                });
+            });
         });
+        /* End transaction */
+        // var sql = 'UPDATE orders SET client = ?, email = ?, size = ?, city = ?, idmaster = ?, price = ?, start = ?, end = ?  WHERE id   = ?';
+        // con.query(sql, [
+        //     req.body.client,
+        //     req.body.email,
+        //     req.body.size,
+        //     req.body.city,
+        //     req.body.idmaster,
+        //     req.body.price,
+        //     start,
+        //     end,
+        //     req.body.id
+        // ], function (err, result) {
+        //     con.end() ;
+        //     if (err) {
+        //         res.status(501).json({ success: false, error: true, data: 'truble of database' });
+        //         return ;
+        //     }
+        //     res.status(200).json({ success: true, error: false, data: result });
+        //
+        // });
     });
 });
 

@@ -22,6 +22,7 @@ router.get('/free-master', function(req, res) {
         }
         var sql = '';
         if (req.query.option === 'new') {
+            console.log('free master for new order');
             sql = 'SELECT masters.id, masters.name, masters.surname, masters.idcity, masters.rating, citys.city\n'
                 + "FROM masters\n"
                 + "LEFT JOIN citys ON masters.idcity = citys.id\n"

@@ -21,8 +21,8 @@ router.post('/city', citys) ;
 router.put('/city', citys) ;
 
 
-router.post('/price', price) ;
-router.put('/price', price) ;
+router.post('/product', price) ;
+router.put('/product', price) ;
 
 
 router.get('/order', orders) ;
@@ -121,7 +121,7 @@ router.get('/checktoken', function(req, res) {
 router.delete('/delete', function(req, res) {
     console.log('delete init');
 
-    var arrayValidation = ['masters', 'citys', 'orders', 'clients', 'price'] ;
+    var arrayValidation = ['masters', 'citys', 'orders', 'clients', 'product'] ;
     if (arrayValidation.indexOf(req.query.route) === -1) {
         res.status(403).json({ success: false, error: true, data: 'operation of remove not possible' });
         return ;

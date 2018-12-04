@@ -29,7 +29,7 @@ app.use(bodyParser.urlencoded({
 app.use('/protected', protected);
 app.post('/login', protected.authenticate);
 app.get('/city',citys) ;
-app.get('/price',price) ;
+app.get('/product',price) ;
 app.get('/free-master',masters);
 app.post('/order',orders);
 
