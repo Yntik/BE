@@ -38,16 +38,59 @@ const order = {
                 if (body.client.length < 3) {
                     return reject('not validation') ;
 
-                } else if (!(req.body.size > 0 && req.body.size <= 3)) {
+                } else if (!(body.size > 0 && body.size <= 3)) {
                     return reject('not validation') ;
                 }
+            })
+            .then(con => {
                 this.checkmaster(body)
-
+            })
+            .then(con => {
+                console.log('checkmasterisfree');
+                this.checkmasterisfree(body)
+            })
+            .then(con => {
+                /* Begin transaction */
+                console.log('Begin transaction ');
+                con.beginTransaction(function(err) {
+                   if (err) {
+                       return reject(err) ;
+                        }
+                    this.insertclient({body: body}).then(result => {
+                        this.insertorder({body: body, result: result}).then(result => {
+                            con.commit(function(err) {
+                                if (err) {
+                                    con.rollback(function() {
+                                        return reject(err);
+                                    });
+                                }
+                                console.log('Transaction Complete.');
+                                /* End transaction */
+                                var transporter = nodemailer.createTransport({
+                                    service: 'Gmail',
+                                    auth: {
+                                        user: 'clockwiseclockware@gmail.com',
+                                        pass: 'passwordsecret'
+                                    }
+                                });
+                                console.log('created');
+                                transporter.sendMail({
+                                    from: 'clockwiseclockware@gmail.com',
+                                    to: body.email,
+                                    subject: 'Заказ принят!',
+                                    text: 'Ваш заказ поступил в обработку!'
+                                });
+                                resolve(result);
+                            });
+                        })
+                    })
+                })
             })
 
     },
 
     checkmaster: ({body}) => {
+        console.log('checkmaster');
         return mypool.getCon()
             .then((con) => {
                 var sql = "SELECT * FROM masters\n"
@@ -70,6 +113,7 @@ const order = {
                             reject('Master not found');
                             return
                         }
+
                         resolve(result);
                     })
                 });
@@ -106,7 +150,7 @@ const order = {
     insertclient: ({ body }) => {
         return mypool.getCon()
             .then(con => {
-                sql =  "INSERT INTO clients (name, email, idcity) VALUES (\n"
+                var sql =  "INSERT INTO clients (name, email, idcity) VALUES (\n"
                     + mysql.escape(body.client) + ', '
                     + mysql.escape(body.email) + ', '
                     + body.city + ")\n"
@@ -128,7 +172,7 @@ const order = {
     },
 
 
-    insertorder: ({ body }) => {
+    insertorder: ({ body, result }) => {
         return mypool.getCon()
             .then(con => {
                 var log = result.insertId;
