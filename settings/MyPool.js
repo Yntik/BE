@@ -1,23 +1,26 @@
-var MyPool = require('mysql');
-var config = require('./MYSQL_OPTION');
+var MyPool = require('mysql')
+var config = require('./MYSQL_OPTION')
 
-var pool = MyPool.createPool(config.POOL_OPTION);
+var pool = MyPool.createPool(config.POOL_OPTION)
 
 let MySQL = {
 
 
-    getCon: function (resolve, reject) {
-        pool.getConnection(function (err, con) {
-            if (err) {
-                console.log(err);
-                reject(err);
-                callback(true);
-            }
-            resolve(con)
-        })
+  getCon: () => {
+    return new Promise((resolve, reject) => {
+      pool.getConnection((err, con) => {
+        if (err) {
+          console.log(err)
+          return reject(err)
+        }
 
-    }
+        resolve(con)
+      })
+    })
+
+
+  }
 }
 
 
-module.exports = MySQL;
+module.exports = MySQL
