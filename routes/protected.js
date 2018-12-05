@@ -6,8 +6,8 @@ var jwt = require('jsonwebtoken');
 var mysql = require('mysql') ;
 
 const masters = require('./masters') ;
-const citys = require('./citys') ;
-const price = require('./price')
+const citys = require('./cities') ;
+const price = require('./product')
 const orders = require('./orders') ;
 const clients = require('./clientlist') ;
 

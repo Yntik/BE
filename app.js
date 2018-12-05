@@ -4,8 +4,8 @@ var express = require('express');
 var cors = require('cors');
 var bodyParser = require('body-parser');
 
-const citys = require('./routes/citys');
-const price = require('./routes/price');
+const citys = require('./routes/cities');
+const price = require('./routes/product');
 const masters = require('./routes/masters');
 const orders = require('./routes/orders');
 

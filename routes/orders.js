@@ -1,12 +1,17 @@
 const config = require('../settings/config');
 var express = require('express');
 var router = express.Router();
-var jwt = require('jsonwebtoken');
-var mysql = require('mysql') ;
-var cors = require('cors');
+var OrderModel = require('../models/orders')
 var nodemailer = require('nodemailer') ;
-
+var cors = require('cors');
 router.use(cors(config.CORS_OPTIONS));
+
+
+router.get('/order', (req, res) => {
+    OrderModel.get()
+        .then(result => res.status(200).json({ success: true, error: false, data: result }))
+        .catch(err => res.status(501).json({ success: false, error: true, data: err }));
+});
 
 
 router.post('/order', function(req, res) {
@@ -133,22 +138,22 @@ router.post('/order', function(req, res) {
                             });
                         });
                         /* End transaction */
-                            console.log(sql);
-                            var transporter = nodemailer.createTransport({
-                                service: 'Gmail',
-                                auth: {
-                                    user: 'clockwiseclockware@gmail.com',
-                                    pass: 'passwordsecret'
-                                }
-                            });
-                            console.log('created');
-                            transporter.sendMail({
-                                from: 'clockwiseclockware@gmail.com',
-                                to: req.body.email,
-                                subject: 'Заказ принят!',
-                                text: 'Ваш заказ поступил в обработку!'
-                            });
-                            res.status(200).json({ success: true, error: false, data: result });
+                        console.log(sql);
+                        var transporter = nodemailer.createTransport({
+                            service: 'Gmail',
+                            auth: {
+                                user: 'clockwiseclockware@gmail.com',
+                                pass: 'passwordsecret'
+                            }
+                        });
+                        console.log('created');
+                        transporter.sendMail({
+                            from: 'clockwiseclockware@gmail.com',
+                            to: req.body.email,
+                            subject: 'Заказ принят!',
+                            text: 'Ваш заказ поступил в обработку!'
+                        });
+                        res.status(200).json({ success: true, error: false, data: result });
                     });
                 });
             });
@@ -156,33 +161,6 @@ router.post('/order', function(req, res) {
     });
 });
 
-
-router.get('/order', function(req, res) {
-    var con = mysql.createConnection(config.MYSQL_OPTION);
-    con.connect(function(err) {
-        if (err) {
-            res.status(501).json({ success: false, error: 1, data: 'not connected! to database' });
-            return ;
-        }
-        var sql = 'SELECT orders.id, orders.idclient, orders.idmaster, orders.idcity, orders.idproduct, orders.price, orders.start, orders.end, clients.name client, clients.email, masters.name, masters.surname, product.size, citys.city\n '
-            + "FROM orders\n"
-            + "LEFT JOIN clients ON orders.idclient = clients.id\n"
-            + "LEFT JOIN masters ON orders.idmaster = masters.id\n"
-            + "LEFT JOIN product ON orders.idproduct = product.id\n"
-            + "LEFT JOIN citys ON orders.idcity = citys.id\n"
-            + "ORDER BY orders.start DESC";
-
-        con.query(sql, function (err, result) {
-            con.end() ;
-            if (err) {
-                console.log(err)
-                res.status(501).json({ success: false, error: true, data: 'trouble of database' });
-                return ;
-            }
-            res.status(200).json({ success: true, error: false, data: result });
-        });
-    });
-});
 
 router.put('/order' , function(req, res) {
     console.log(req.body);
