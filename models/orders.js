@@ -23,7 +23,7 @@ const order = {
                             reject(err);
                             return;
                         }
-
+                        con.release();
                         resolve(result);
                     })
                 });
@@ -89,7 +89,7 @@ const order = {
                                     });
                                 });
 
-
+                                con.release();
                                 resolve(result);
                             })
                     });
@@ -117,6 +117,7 @@ const order = {
                                         });
                                     }
                                     console.log('Transaction Complete.');
+                                    con.release();
                                     resolve(result);
                                     /* End transaction */
                                 });
@@ -180,9 +181,6 @@ function updateorder({body}) {
 };
 
 
-
-
-
 function checkmaster({body}) {
     return mypool.getCon()
         .then((con) => {
@@ -206,7 +204,7 @@ function checkmaster({body}) {
                         reject('Master not found');
                         return
                     }
-
+                    con.release();
                     resolve(result);
                 })
             });

@@ -4,11 +4,11 @@ const mypool = require('../settings/MyPool')
 const master = {
 
 
-    getFreeMaster: ({ query }) => {
+    getFreeMaster: ({query}) => {
         return mypool.getCon()
             .then((con) => {
-                var start = new Date(String(query.datetime)) ;
-                var end = new Date(String(query.datetime)) ;
+                var start = new Date(String(query.datetime));
+                var end = new Date(String(query.datetime));
                 end.setHours(end.getHours() + Number(query.size))
 
                 var sql = '';
@@ -18,18 +18,18 @@ const master = {
                         + "FROM masters\n"
                         + "LEFT JOIN cities ON masters.idcity = cities.id\n"
                         + "WHERE cities.id = " + mysql.escape(decodeURI(query.city)) + "\n"
-                        + "AND masters.id NOT IN (" +"\n"
-                        + "SELECT idmaster FROM orders WHERE start <= "  + mysql.escape(start) + " AND " + mysql.escape(start) + " <= end" +"\n"
-                        + "OR start <= "  + mysql.escape(end) + " AND " + mysql.escape(end) + " <= end )" ;
+                        + "AND masters.id NOT IN (" + "\n"
+                        + "SELECT idmaster FROM orders WHERE start <= " + mysql.escape(start) + " AND " + mysql.escape(start) + " <= end" + "\n"
+                        + "OR start <= " + mysql.escape(end) + " AND " + mysql.escape(end) + " <= end )";
                 }
                 else {
                     sql = 'SELECT masters.id, masters.name, masters.surname, masters.idcity, masters.rating, cities.city\n '
                         + "FROM masters\n"
                         + "LEFT JOIN cities ON masters.idcity = cities.id\n"
                         + "WHERE cities.id = " + mysql.escape(decodeURI(query.city)) + "\n"
-                        + "AND masters.id NOT IN (" +"\n"
-                        + "SELECT idmaster FROM orders WHERE (start <= "  + mysql.escape(start) + " AND " + mysql.escape(start) + " <= end" +"\n"
-                        + "OR start <= "  + mysql.escape(end) + " AND " + mysql.escape(end) + " <= end) AND NOT orders.id = " + mysql.escape(Number(query.option)) + ")" ;
+                        + "AND masters.id NOT IN (" + "\n"
+                        + "SELECT idmaster FROM orders WHERE (start <= " + mysql.escape(start) + " AND " + mysql.escape(start) + " <= end" + "\n"
+                        + "OR start <= " + mysql.escape(end) + " AND " + mysql.escape(end) + " <= end) AND NOT orders.id = " + mysql.escape(Number(query.option)) + ")";
                 }
 
                 return new Promise((resolve, reject) => {
@@ -38,7 +38,7 @@ const master = {
                             reject(err);
                             return;
                         }
-
+                        con.release();
                         resolve(result);
                     })
                 });
@@ -51,7 +51,7 @@ const master = {
                 var sql = 'SELECT masters.id, masters.name, masters.surname, masters.rating, masters.idcity, cities.city\n '
                     + "FROM masters\n"
                     + "LEFT JOIN cities ON masters.idcity = cities.id\n"
-                    + "ORDER BY masters.rating DESC" ;
+                    + "ORDER BY masters.rating DESC";
 
                 return new Promise((resolve, reject) => {
                     con.query(sql, function (err, result) {
@@ -59,14 +59,14 @@ const master = {
                             reject(err);
                             return;
                         }
-
+                        con.release();
                         resolve(result);
                     })
                 });
             });
     },
 
-    create: ({ body }) => {
+    create: ({body}) => {
         return mypool.getCon()
             .then(con => {
                 var sql = "INSERT INTO masters (name, surname, rating, idcity) VALUES ("
@@ -80,14 +80,14 @@ const master = {
                         if (err) {
                             return reject(err);
                         }
-
+                        con.release();
                         resolve(result);
                     })
                 });
             });
     },
 
-    edit: ({ body }) => {
+    edit: ({body}) => {
         return mypool.getCon()
             .then(con => {
                 var sql = 'UPDATE masters SET name = ?, surname = ?, rating = ?, idcity = ? WHERE id = ?';
@@ -102,6 +102,7 @@ const master = {
                         if (err) {
                             return reject(err);
                         }
+                        con.release();
                         resolve(result);
                     })
                 });
@@ -109,8 +110,6 @@ const master = {
     }
 
 };
-
-
 
 
 module.exports = master;

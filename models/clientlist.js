@@ -10,7 +10,7 @@ const clients = {
                 var sql = 'SELECT clients.id, clients.name, clients.email, clients.idcity, cities.city\n '
                     + "FROM clients\n"
                     + "LEFT JOIN cities ON clients.idcity = cities.id\n"
-                    + "ORDER BY clients.id DESC" ;
+                    + "ORDER BY clients.id DESC";
 
                 return new Promise((resolve, reject) => {
                     con.query(sql, function (err, result) {
@@ -18,7 +18,7 @@ const clients = {
                             reject(err);
                             return;
                         }
-
+                        con.release();
                         resolve(result);
                     })
                 });
@@ -26,7 +26,7 @@ const clients = {
     },
 
 
-    edit: ({ name, email, city, id }) => {
+    edit: ({name, email, city, id}) => {
         return mypool.getCon()
             .then(con => {
                 var sql = 'UPDATE clients SET name = ?, email = ?, idcity = ? WHERE id = ?';
@@ -40,6 +40,7 @@ const clients = {
                         if (err) {
                             return reject(err);
                         }
+                        con.release();
                         resolve(result);
                     })
                 });
@@ -47,8 +48,6 @@ const clients = {
     }
 
 };
-
-
 
 
 module.exports = clients;

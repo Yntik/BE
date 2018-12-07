@@ -16,32 +16,32 @@ const product = {
                             reject(err);
                             return;
                         }
-
+                        con.release();
                         resolve(result);
                     })
                 });
             });
     },
 
-    create: ({ body }) => {
+    create: ({body}) => {
         return mypool.getCon()
             .then(con => {
                 var sql = "INSERT INTO product (size, price) VALUES ("
-                    + mysql.escape(body.size)+','+ mysql.escape(body.price) + ")";
+                    + mysql.escape(body.size) + ',' + mysql.escape(body.price) + ")";
 
                 return new Promise((resolve, reject) => {
                     con.query(sql, (err, result) => {
                         if (err) {
                             return reject(err);
                         }
-
+                        con.release();
                         resolve(result);
                     })
                 });
             });
     },
 
-    edit: ({ body }) => {
+    edit: ({body}) => {
         return mypool.getCon()
             .then(con => {
                 var sql = 'UPDATE product SET size = ?, price = ? WHERE id = ?';
@@ -54,6 +54,7 @@ const product = {
                         if (err) {
                             return reject(err);
                         }
+                        con.release();
                         resolve(result);
                     })
                 });
@@ -61,8 +62,6 @@ const product = {
     }
 
 };
-
-
 
 
 module.exports = product;

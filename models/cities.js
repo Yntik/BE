@@ -15,14 +15,14 @@ const cities = {
                             reject(err);
                             return;
                         }
-
+                        con.release();
                         resolve(result);
                     })
                 });
             });
     },
 
-    create: ({ newcity }) => {
+    create: ({newcity}) => {
         return mypool.getCon()
             .then(con => {
                 var sql = `INSERT INTO cities (city) VALUES (${mysql.escape(newcity)})`;
@@ -32,14 +32,14 @@ const cities = {
                         if (err) {
                             return reject(err);
                         }
-
+                        con.release();
                         resolve(result);
                     })
                 });
             });
     },
 
-    edit: ({ editcity,id }) => {
+    edit: ({editcity, id}) => {
         return mypool.getCon()
             .then(con => {
                 var sql = 'UPDATE cities SET city = ? WHERE id = ?'
@@ -51,6 +51,7 @@ const cities = {
                         if (err) {
                             return reject(err);
                         }
+                        con.release();
                         resolve(result);
                     })
                 });
@@ -58,8 +59,6 @@ const cities = {
     }
 
 };
-
-
 
 
 module.exports = cities;

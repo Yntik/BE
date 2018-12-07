@@ -10,7 +10,7 @@ const _delete = {
                 console.log('delete init');
                 var sql = "DELETE FROM "
                     + query.route
-                    + " WHERE id = "+ mysql.escape(Number(query.id)) ;
+                    + " WHERE id = " + mysql.escape(Number(query.id));
 
                 return new Promise((resolve, reject) => {
                     con.query(sql, function (err, result) {
@@ -19,7 +19,7 @@ const _delete = {
                             reject(err);
                             return;
                         }
-
+                        con.release();
                         resolve(result);
                     })
                 });
@@ -27,8 +27,6 @@ const _delete = {
     },
 
 };
-
-
 
 
 module.exports = _delete;
