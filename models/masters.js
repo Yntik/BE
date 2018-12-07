@@ -14,19 +14,19 @@ const master = {
                 var sql = '';
                 if (query.option === 'new') {
                     console.log('free master for new order');
-                    sql = 'SELECT masters.id, masters.name, masters.surname, masters.idcity, masters.rating, citys.city\n'
+                    sql = 'SELECT masters.id, masters.name, masters.surname, masters.idcity, masters.rating, cities.city\n'
                         + "FROM masters\n"
-                        + "LEFT JOIN citys ON masters.idcity = citys.id\n"
-                        + "WHERE citys.id = " + mysql.escape(decodeURI(query.city)) + "\n"
+                        + "LEFT JOIN cities ON masters.idcity = cities.id\n"
+                        + "WHERE cities.id = " + mysql.escape(decodeURI(query.city)) + "\n"
                         + "AND masters.id NOT IN (" +"\n"
                         + "SELECT idmaster FROM orders WHERE start <= "  + mysql.escape(start) + " AND " + mysql.escape(start) + " <= end" +"\n"
                         + "OR start <= "  + mysql.escape(end) + " AND " + mysql.escape(end) + " <= end )" ;
                 }
                 else {
-                    sql = 'SELECT masters.id, masters.name, masters.surname, masters.idcity, masters.rating, citys.city\n '
+                    sql = 'SELECT masters.id, masters.name, masters.surname, masters.idcity, masters.rating, cities.city\n '
                         + "FROM masters\n"
-                        + "LEFT JOIN citys ON masters.idcity = citys.id\n"
-                        + "WHERE citys.id = " + mysql.escape(decodeURI(query.city)) + "\n"
+                        + "LEFT JOIN cities ON masters.idcity = cities.id\n"
+                        + "WHERE cities.id = " + mysql.escape(decodeURI(query.city)) + "\n"
                         + "AND masters.id NOT IN (" +"\n"
                         + "SELECT idmaster FROM orders WHERE (start <= "  + mysql.escape(start) + " AND " + mysql.escape(start) + " <= end" +"\n"
                         + "OR start <= "  + mysql.escape(end) + " AND " + mysql.escape(end) + " <= end) AND NOT orders.id = " + mysql.escape(Number(query.option)) + ")" ;
@@ -48,9 +48,9 @@ const master = {
     get: () => {
         return mypool.getCon()
             .then((con) => {
-                var sql = 'SELECT masters.id, masters.name, masters.surname, masters.rating, masters.idcity, citys.city\n '
+                var sql = 'SELECT masters.id, masters.name, masters.surname, masters.rating, masters.idcity, cities.city\n '
                     + "FROM masters\n"
-                    + "LEFT JOIN citys ON masters.idcity = citys.id\n"
+                    + "LEFT JOIN cities ON masters.idcity = cities.id\n"
                     + "ORDER BY masters.rating DESC" ;
 
                 return new Promise((resolve, reject) => {

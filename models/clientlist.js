@@ -6,9 +6,10 @@ const clients = {
     get: () => {
         return mypool.getCon()
             .then((con) => {
-                var sql = 'SELECT clients.id, clients.name, clients.email, clients.idcity, citys.city\n '
+                console.log('get clients')
+                var sql = 'SELECT clients.id, clients.name, clients.email, clients.idcity, cities.city\n '
                     + "FROM clients\n"
-                    + "LEFT JOIN citys ON clients.idcity = citys.id\n"
+                    + "LEFT JOIN cities ON clients.idcity = cities.id\n"
                     + "ORDER BY clients.id DESC" ;
 
                 return new Promise((resolve, reject) => {
