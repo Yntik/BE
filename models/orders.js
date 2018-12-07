@@ -58,10 +58,15 @@ const order = {
                         if (err) {
                             return reject(err)
                         }
-
+                        console.log('insertclient');
                         return insertclient({body: body})
+                            .then( result => {
+                                console.log('checkproduct');
+                                return checkproduct({body: body, result_client: result})
+                            })
                             .then(result => {
-                                return insertorder({body: body, result: result})
+                                console.log('insertorder');
+                                return insertorder({body: body, price: result.price, result_client: result.result_client})
                             })
                             .then(result => {
                                 con.commit(function (err) {
@@ -127,6 +132,27 @@ const order = {
             })
     },
 };
+
+
+function checkproduct({body, result_client}) {
+    return mypool.getCon()
+        .then((con) => {
+            var sql = 'SELECT * FROM product\n'
+                + 'WHERE product.id = ' + mysql.escape(body.size)
+
+            return new Promise((resolve, reject) => {
+                con.query(sql, function (err, result) {
+                    if (err) {
+                        reject(err);
+                        return;
+                    }
+                    con.release();
+                    resolve({price: result.price, result_client: result_client});
+                })
+            });
+        });
+}
+
 
 
 function updateclient({body}) {
@@ -238,15 +264,15 @@ function checkmasterisfree({body}) {
 };
 
 
-function insertorder({body, result}) {
+function insertorder({body, price, result_client}) {
     return mypool.getCon()
         .then(con => {
             var start = new Date(body.datetime);
             var end = new Date(body.datetime);
-            var log = result.insertId;
+            var log = result_client.insertId;
             var sql = "INSERT INTO orders (idclient, price, idproduct, idcity, idmaster, start, end) VALUES (\n"
                 + mysql.escape(log) + ','
-                + mysql.escape(body.price) + ','
+                + mysql.escape(price) + ','
                 + mysql.escape(Number(body.size)) + ','
                 + mysql.escape(Number(body.city)) + ','
                 + mysql.escape(Number(body.master.id)) + ','
