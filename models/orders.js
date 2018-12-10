@@ -272,7 +272,7 @@ function insertorder({body, price, result_client}) {
             var log = result_client.insertId;
             var sql = "INSERT INTO orders (idclient, price, idproduct, idcity, idmaster, start, end) VALUES (\n"
                 + mysql.escape(log) + ','
-                + mysql.escape(price) + ','
+                + mysql.escape(String(price)) + ','
                 + mysql.escape(Number(body.size)) + ','
                 + mysql.escape(Number(body.city)) + ','
                 + mysql.escape(Number(body.master.id)) + ','
