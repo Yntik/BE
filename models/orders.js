@@ -65,7 +65,7 @@ const order = {
                                 return checkproduct({body: body, result_client: result})
                             })
                             .then(result => {
-                                console.log('insertorder');
+                                console.log('insertorder', result);
                                 return insertorder({body: body, price: result.price, result_client: result.result_client})
                             })
                             .then(result => {
@@ -94,7 +94,6 @@ const order = {
                                     });
                                 });
 
-                                con.release();
                                 resolve(result);
                             })
                     });
@@ -138,8 +137,7 @@ function checkproduct({body, result_client}) {
     return mypool.getCon()
         .then((con) => {
             var sql = 'SELECT * FROM product\n'
-                + 'WHERE product.id = ' + mysql.escape(body.size)
-
+                + 'WHERE product.id = ' + mysql.escape(body.size);
             return new Promise((resolve, reject) => {
                 con.query(sql, function (err, result) {
                     if (err) {
@@ -147,7 +145,8 @@ function checkproduct({body, result_client}) {
                         return;
                     }
                     con.release();
-                    resolve({price: result.price, result_client: result_client});
+                    console.log('in product',result[0].price);
+                    resolve({price: result[0].price, result_client: result_client});
                 })
             });
         });
@@ -171,6 +170,7 @@ function updateclient({body}) {
                             return reject('trouble of database(2)');
                         });
                     }
+                    con.release();
                     resolve();
                 })
             })
@@ -200,6 +200,7 @@ function updateorder({body}) {
                             return reject('trouble of database(3)');
                         });
                     }
+                    con.release();
                     resolve(result);
                 })
             })
@@ -257,6 +258,7 @@ function checkmasterisfree({body}) {
                         reject('Master not found');
                         return
                     }
+                    con.release();
                     resolve(con);
                 })
             });
@@ -265,6 +267,7 @@ function checkmasterisfree({body}) {
 
 
 function insertorder({body, price, result_client}) {
+    console.log(typeof price, " priseee ", price);
     return mypool.getCon()
         .then(con => {
             var start = new Date(body.datetime);
@@ -285,7 +288,7 @@ function insertorder({body, price, result_client}) {
                             return reject(err);
                         })
                     }
-
+                    con.release();
                     resolve(result);
                 })
             });
@@ -311,7 +314,7 @@ function insertclient({body}) {
                             return reject(err);
                         })
                     }
-
+                    con.release();
                     resolve(result);
                 })
             });
