@@ -5,6 +5,7 @@ const cities = {
 
 
     get: () => {
+
         return mypool.getCon()
             .then((con) => {
                 var sql = 'SELECT * FROM cities';

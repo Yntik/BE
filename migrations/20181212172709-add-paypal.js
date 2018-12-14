@@ -18,8 +18,8 @@ exports.up = function (db) {
     return db.createTable('paypal', {
         columns: {
             id: { type: 'int', primaryKey: true, notNull: true, autoIncrement: true },
-            state_payment: {type: 'int', defaultValue: 0, notNull: true, unique: true },
-            paypal_id: {type: 'string', notNull: true, unique: true }
+            state_payment: {type: 'int', defaultValue: 0, notNull: true},
+            paypal_id: {type: 'string', defaultValue: 1}
         },
         ifNotExists: true
     });
