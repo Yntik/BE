@@ -3,8 +3,9 @@ var router = express.Router()
 var paypalModel = require('../models/paypal/paypal')
 
 
-router.post('/paypal', (req, res) => {
+router.post('/paypal3', (req, res) => {
     console.log('request ++');
+    console.log(typeof req.body);
     /*console.log('headers', req.headers);*/
     paypalModel.verify({req: req})
         .then(resolve => {

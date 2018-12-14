@@ -4,8 +4,7 @@ var paypal_config = {
     'client_secret': 'EOZ1Giqc4-erp98mo6vLDYq-YomzEUtItxO69UH4sVfPdbAbW-k2O8guk0TC2rGyVjdFOpIzpXAhGY86'
 };
 
-var webhookIds = {
+const webhookIds = {
     Payment_sale_completed: "4GJ75074AN093941F"
 }
 module.exports = webhookIds;
-module.exports = paypal_config;

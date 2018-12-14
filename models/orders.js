@@ -26,7 +26,7 @@ const order = {
                     sql = 'SELECT * FROM orders\n'
                         + 'WHERE id = ' + mysql.escape(order_id);
                 }
-
+                    console.log(sql);
                     return new Promise((resolve, reject) => {
                         console.log('select order');
                         con.query(sql, function (err, result) {

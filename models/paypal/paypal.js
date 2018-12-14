@@ -1,9 +1,9 @@
 const mysql = require('mysql');
 const mypool = require('../../settings/MyPool');
-const OrderModel = require('../orders');
+    const OrderModel = require('../orders');
 const paypal_service = require('paypal-rest-sdk');
 const webhookIds = require('../../settings/paypal');
-const config = require('../../settings/paypal')
+
 
 paypal_service.configure({
     'mode': 'sandbox', //sandbox or live
@@ -16,6 +16,7 @@ const paypal = {
 
     stateChange: ({body}) => {
         let order;
+        console.log(typeof body);
         return new Promise((resolve, reject) => {
             console.log('check comp');
             if (body.resource.state !== 'completed') {// completed
@@ -26,6 +27,7 @@ const paypal = {
         })
             .then(() => {
                 console.log('get order');
+
                 return OrderModel.get(Number(body.resource.custom))
             })
             .then(result => {
@@ -35,11 +37,12 @@ const paypal = {
             })
             .then(con => {
                 console.log('made query', order[0].idpaypal);
-                var sql = 'UPDATE paypal SET state_payment = ?, paypal_id = ? WHERE id = ?'
+                var sql = 'UPDATE paypal SET state_payment = ?, paypal_id = ?, webhook = ? WHERE id = ?'
                 return new Promise((resolve, reject) => {
                     con.query(sql, [
                         1,
                         body.resource.id,
+                        JSON.stringify(body),
                         order[0].idpaypal
                     ], function (err, result) {
                         if (err) {
@@ -56,6 +59,7 @@ const paypal = {
 
     verify: ({req}) => {
         return new Promise((resolve, reject) => {
+            console.log('reeeeeq',req.body)
             var webhookId = webhookIds.Payment_sale_completed;
             console.log('request++++')
             paypal_service.notification.webhookEvent.verify(req.headers, req.body, webhookId, (error, response) => {
