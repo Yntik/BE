@@ -4,20 +4,34 @@ const mypool = require('../settings/MyPool')
 const product = {
 
 
-    get: () => {
+    get: (product_id) => {
         return mypool.getCon()
             .then((con) => {
-                var sql = 'SELECT * FROM product\n'
-                    + "ORDER BY product.size";
-
+                var sql ;
+                if (product_id === undefined) {
+                    sql = 'SELECT * FROM product\n'
+                        + "ORDER BY product.size";
+                }
+                else {
+                    sql = 'SELECT * FROM product\n'
+                        + "WHERE id = " + mysql.escape(Number(product_id));
+                }
+                console.log('sql///', sql);
                 return new Promise((resolve, reject) => {
                     con.query(sql, function (err, result) {
+                        con.release();
                         if (err) {
                             reject(err);
                             return;
                         }
-                        con.release();
-                        resolve(result);
+                        if (product_id === undefined) {
+                            resolve(result);
+                        }
+                        else {
+                            console.log('resuuuulttt', result);
+                            resolve({price: result[0].price});
+                        }
+
                     })
                 });
             });
@@ -31,10 +45,11 @@ const product = {
 
                 return new Promise((resolve, reject) => {
                     con.query(sql, (err, result) => {
+                        con.release();
                         if (err) {
                             return reject(err);
                         }
-                        con.release();
+
                         resolve(result);
                     })
                 });
@@ -51,10 +66,11 @@ const product = {
                         Number(body.price),
                         body.id
                     ], function (err, result) {
+                        con.release();
                         if (err) {
                             return reject(err);
                         }
-                        con.release();
+
                         resolve(result);
                     })
                 });

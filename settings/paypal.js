@@ -5,6 +5,7 @@ var paypal_config = {
 };
 
 const webhookIds = {
-    Payment_sale_completed: "4GJ75074AN093941F"
+    Payment_sale_completed: "4GJ75074AN093941F",
+    Payment_sale_refund: "3Y86647GC444723S"
 }
 module.exports = webhookIds;

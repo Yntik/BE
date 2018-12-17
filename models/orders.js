@@ -2,6 +2,9 @@ const mysql = require('mysql');
 const mypool = require('../settings/MyPool');
 const nodemailer = require('nodemailer');
 const createPaypal = require('./paypal/createPaypal');
+const webhookModel = require('./paypal/webhook');
+const productModel = require('./product');
+const deleteModel = require('./delete')
 
 const order = {
 
@@ -13,7 +16,7 @@ const order = {
                 var sql;
                 if (order_id === undefined) {
                     console.log('order id === undefined');
-                    sql = 'SELECT orders.id, orders.idclient, orders.idmaster, orders.idcity, orders.idproduct, orders.price, orders.start, orders.end, clients.name client, clients.email, masters.name, masters.surname, product.size, cities.city\n '
+                    sql = 'SELECT orders.id, orders.idclient, orders.idpaypal, orders.idmaster, orders.idcity, orders.idproduct, orders.price, orders.start, orders.end, clients.name client, clients.email, masters.name, masters.surname, product.size, cities.city\n'
                         + "FROM orders\n"
                         + "LEFT JOIN clients ON orders.idclient = clients.id\n"
                         + "LEFT JOIN masters ON orders.idmaster = masters.id\n"
@@ -26,18 +29,18 @@ const order = {
                     sql = 'SELECT * FROM orders\n'
                         + 'WHERE id = ' + mysql.escape(order_id);
                 }
-                    console.log(sql);
-                    return new Promise((resolve, reject) => {
-                        console.log('select order');
-                        con.query(sql, function (err, result) {
-                            if (err) {
-                                reject(err);
-                                return;
-                            }
-                            con.release();
-                            resolve(result);
-                        })
-                    });
+                console.log(sql);
+                return new Promise((resolve, reject) => {
+                    console.log('select order');
+                    con.query(sql, function (err, result) {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        con.release();
+                        resolve(result);
+                    })
+                });
             });
     },
 
@@ -77,7 +80,7 @@ const order = {
                             .then(result => {
                                 client_id = result.insertId;
                                 console.log('checkproduct');
-                                return checkproduct({body: body})
+                                return productModel.get(body.size);
                             })
                             .then(result => {
                                 price = result.price;
@@ -156,27 +159,67 @@ const order = {
                 });
             })
     },
+
+    deleteOrder: ({req}) => {
+        return mypool.getCon()
+            .then((con) => {
+                console.log("transaction start");
+                return new Promise((resolve, reject) => {
+                    con.beginTransaction(function (err) {
+                        if (err) {
+                            return reject(err)
+                        }
+                        console.log("delete order");
+                        return deleteModel.delete({query: req.query})
+                            .then(resolve => {
+                                console.log("get paypal");
+                                console.log(req.query.paypal_id);
+                                return createPaypal.get({paypal_id: req.query.paypal_id});
+                            })
+                            .then(resolve => {
+                                if (resolve.state_payment !== 0) {
+                                    //refund
+                                    console.log("do refund");
+                                    return createPaypal.refund({paypal_info: resolve})
+                                }
+                                return Promise.resolve();
+                            })
+                            .then(resolve => {
+                                console.log("store webhook");
+                                return webhookModel.storeWebhook(resolve.body, {id: resolve.id})
+                            })
+                            .then(resolve => {
+                                console.log("delete paypal");
+                                return deleteModel.delete({query: {id: req.query.paypal_id, route: 'paypal'}})
+                            })
+                            .then(resolve => {
+                                console.log("do commit");
+                                con.commit(function (err) {
+                                    if (err) {
+                                        con.rollback(function () {
+                                            return reject(err);
+                                        });
+                                    }
+                                    console.log('Transaction Complete.');
+                                    return Promise.resolve('succes');
+                                    /* End transaction */
+                                });
+                            })
+                            .catch(reject => {
+                                return new Promise((resolve, reject) => {
+                                    console.log('do rollback.');
+                                    con.rollback(function (err) {
+                                        return reject(err);
+                                    })
+                                    reject( new Error('opps'))
+                                });
+
+                            })
+                    });
+                });
+            })
+    }
 };
-
-
-function checkproduct({body, result_client}) {
-    return mypool.getCon()
-        .then((con) => {
-            var sql = 'SELECT * FROM product\n'
-                + 'WHERE product.id = ' + mysql.escape(body.size);
-            return new Promise((resolve, reject) => {
-                con.query(sql, function (err, result) {
-                    if (err) {
-                        reject(err);
-                        return;
-                    }
-                    con.release();
-                    console.log('in product', result[0].price);
-                    resolve({price: result[0].price});
-                })
-            });
-        });
-}
 
 
 function updateclient({body}) {
