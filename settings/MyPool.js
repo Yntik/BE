@@ -13,7 +13,6 @@ let MySQL = {
                     console.log(err)
                     return reject(err)
                 }
-                console.log('2');
                 resolve(con)
             })
         })

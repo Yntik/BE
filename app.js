@@ -8,6 +8,7 @@ const citys = require('./routes/cities');
 const price = require('./routes/product');
 const masters = require('./routes/masters');
 const orders = require('./routes/orders');
+const paypal = require('./routes/paypal')
 
 
 var app = express();
@@ -32,6 +33,7 @@ app.get('/cities',citys) ;
 app.get('/product',price) ;
 app.get('/free-master',masters);
 app.post('/orders',orders);
+app.post('/paypal',paypal);
 
 
 

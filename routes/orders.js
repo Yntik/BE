@@ -26,7 +26,7 @@ router.put('/orders' , function(req, res) {
 });
 
 router.delete('/orders', (req, res) => {
-    DeleteModel.delete({ query: req.query })
+    OrderModel.deleteOrder({ req: req})
         .then(result => res.status(200).json({ success: true, error: false, data: result }))
         .catch(err => res.status(501).json({ success: false, error: true, data: err }));
 });

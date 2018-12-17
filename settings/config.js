@@ -22,7 +22,7 @@ if (conf.get('env') === 'production') {
     // в боевом окружении используем другой порт и сервер БД
     conf.load({
         CORS: {
-            origin: 'http://localhost:4200',
+            origin: ['http://localhost:4200', 'https://aa54b705.ngrok.io']
         }
     });
 }

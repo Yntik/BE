@@ -14,12 +14,13 @@ const _delete = {
 
                 return new Promise((resolve, reject) => {
                     con.query(sql, function (err, result) {
+                        con.release();
                         if (err) {
                             console.log(err);
                             reject(err);
                             return;
                         }
-                        con.release();
+                        console.log(result);
                         resolve(result);
                     })
                 });

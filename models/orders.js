@@ -1,23 +1,37 @@
 const mysql = require('mysql');
 const mypool = require('../settings/MyPool');
-var nodemailer = require('nodemailer');
-
+const nodemailer = require('nodemailer');
+const createPaypal = require('./paypal/createPaypal');
+const webhookModel = require('./paypal/webhook');
+const productModel = require('./product');
+const deleteModel = require('./delete')
 
 const order = {
 
 
-    get: () => {
+    get: (order_id) => {
+        console.log('get orders init');
         return mypool.getCon()
             .then((con) => {
-                var sql = 'SELECT orders.id, orders.idclient, orders.idmaster, orders.idcity, orders.idproduct, orders.price, orders.start, orders.end, clients.name client, clients.email, masters.name, masters.surname, product.size, cities.city\n '
-                    + "FROM orders\n"
-                    + "LEFT JOIN clients ON orders.idclient = clients.id\n"
-                    + "LEFT JOIN masters ON orders.idmaster = masters.id\n"
-                    + "LEFT JOIN product ON orders.idproduct = product.id\n"
-                    + "LEFT JOIN cities ON orders.idcity = cities.id\n"
-                    + "ORDER BY orders.start DESC";
-
+                var sql;
+                if (order_id === undefined) {
+                    console.log('order id === undefined');
+                    sql = 'SELECT orders.id, orders.idclient, orders.idpaypal, orders.idmaster, orders.idcity, orders.idproduct, orders.price, orders.start, orders.end, clients.name client, clients.email, masters.name, masters.surname, product.size, cities.city\n'
+                        + "FROM orders\n"
+                        + "LEFT JOIN clients ON orders.idclient = clients.id\n"
+                        + "LEFT JOIN masters ON orders.idmaster = masters.id\n"
+                        + "LEFT JOIN product ON orders.idproduct = product.id\n"
+                        + "LEFT JOIN cities ON orders.idcity = cities.id\n"
+                        + "ORDER BY orders.start DESC";
+                }
+                else {
+                    console.log('made query order');
+                    sql = 'SELECT * FROM orders\n'
+                        + 'WHERE id = ' + mysql.escape(order_id);
+                }
+                console.log(sql);
                 return new Promise((resolve, reject) => {
+                    console.log('select order');
                     con.query(sql, function (err, result) {
                         if (err) {
                             reject(err);
@@ -53,6 +67,9 @@ const order = {
                 console.log('Begin transaction ');
 
                 return new Promise((resolve, reject) => {
+                    let client_id;
+                    let paypal_id;
+                    let price;
 
                     con.beginTransaction(function (err) {
                         if (err) {
@@ -60,13 +77,25 @@ const order = {
                         }
                         console.log('insertclient');
                         return insertclient({body: body})
-                            .then( result => {
+                            .then(result => {
+                                client_id = result.insertId;
                                 console.log('checkproduct');
-                                return checkproduct({body: body, result_client: result})
+                                return productModel.get(body.size);
                             })
                             .then(result => {
-                                console.log('insertorder');
-                                return insertorder({body: body, price: result.price, result_client: result.result_client})
+                                price = result.price;
+                                console.log('createPaypal');
+                                return createPaypal.createPaypal();
+                            })
+                            .then(result => {
+                                paypal_id = result.insertId;
+                                console.log('insertorder', result);
+                                return insertorder({
+                                    body: body,
+                                    price: price,
+                                    client_id: client_id,
+                                    paypal_id: paypal_id
+                                })
                             })
                             .then(result => {
                                 con.commit(function (err) {
@@ -94,7 +123,6 @@ const order = {
                                     });
                                 });
 
-                                con.release();
                                 resolve(result);
                             })
                     });
@@ -131,28 +159,67 @@ const order = {
                 });
             })
     },
+
+    deleteOrder: ({req}) => {
+        return mypool.getCon()
+            .then((con) => {
+                console.log("transaction start");
+                return new Promise((resolve, reject) => {
+                    con.beginTransaction(function (err) {
+                        if (err) {
+                            return reject(err)
+                        }
+                        console.log("delete order");
+                        return deleteModel.delete({query: req.query})
+                            .then(resolve => {
+                                console.log("get paypal");
+                                console.log(req.query.paypal_id);
+                                return createPaypal.get({paypal_id: req.query.paypal_id});
+                            })
+                            .then(resolve => {
+                                if (resolve.state_payment !== 0) {
+                                    //refund
+                                    console.log("do refund");
+                                    return createPaypal.refund({paypal_info: resolve})
+                                }
+                                return Promise.resolve();
+                            })
+                            .then(resolve => {
+                                console.log("store webhook");
+                                return webhookModel.storeWebhook(resolve.body, {id: resolve.id})
+                            })
+                            .then(resolve => {
+                                console.log("delete paypal");
+                                return deleteModel.delete({query: {id: req.query.paypal_id, route: 'paypal'}})
+                            })
+                            .then(resolve => {
+                                console.log("do commit");
+                                con.commit(function (err) {
+                                    if (err) {
+                                        con.rollback(function () {
+                                            return reject(err);
+                                        });
+                                    }
+                                    console.log('Transaction Complete.');
+                                    return Promise.resolve('succes');
+                                    /* End transaction */
+                                });
+                            })
+                            .catch(reject => {
+                                return new Promise((resolve, reject) => {
+                                    console.log('do rollback.');
+                                    con.rollback(function (err) {
+                                        return reject(err);
+                                    })
+                                    reject( new Error('opps'))
+                                });
+
+                            })
+                    });
+                });
+            })
+    }
 };
-
-
-function checkproduct({body, result_client}) {
-    return mypool.getCon()
-        .then((con) => {
-            var sql = 'SELECT * FROM product\n'
-                + 'WHERE product.id = ' + mysql.escape(body.size)
-
-            return new Promise((resolve, reject) => {
-                con.query(sql, function (err, result) {
-                    if (err) {
-                        reject(err);
-                        return;
-                    }
-                    con.release();
-                    resolve({price: result.price, result_client: result_client});
-                })
-            });
-        });
-}
-
 
 
 function updateclient({body}) {
@@ -171,6 +238,7 @@ function updateclient({body}) {
                             return reject('trouble of database(2)');
                         });
                     }
+                    con.release();
                     resolve();
                 })
             })
@@ -200,6 +268,7 @@ function updateorder({body}) {
                             return reject('trouble of database(3)');
                         });
                     }
+                    con.release();
                     resolve(result);
                 })
             })
@@ -257,6 +326,7 @@ function checkmasterisfree({body}) {
                         reject('Master not found');
                         return
                     }
+                    con.release();
                     resolve(con);
                 })
             });
@@ -264,20 +334,21 @@ function checkmasterisfree({body}) {
 };
 
 
-function insertorder({body, price, result_client}) {
+function insertorder({body, price, client_id, paypal_id}) {
+    console.log(typeof price, " priseee ", price);
     return mypool.getCon()
         .then(con => {
             var start = new Date(body.datetime);
             var end = new Date(body.datetime);
-            var log = result_client.insertId;
-            var sql = "INSERT INTO orders (idclient, price, idproduct, idcity, idmaster, start, end) VALUES (\n"
-                + mysql.escape(log) + ','
+            var sql = "INSERT INTO orders (idclient, price, idproduct, idcity, idmaster, start, end, idpaypal) VALUES (\n"
+                + mysql.escape(client_id) + ','
                 + mysql.escape(String(price)) + ','
                 + mysql.escape(Number(body.size)) + ','
                 + mysql.escape(Number(body.city)) + ','
                 + mysql.escape(Number(body.master.id)) + ','
                 + mysql.escape(start) + ','
-                + mysql.escape(end) + ");\n";
+                + mysql.escape(end) + ','
+                + mysql.escape(paypal_id) + ");\n";
             return new Promise((resolve, reject) => {
                 con.query(sql, (err, result) => {
                     if (err) {
@@ -285,7 +356,8 @@ function insertorder({body, price, result_client}) {
                             return reject(err);
                         })
                     }
-
+                    console.log(result);
+                    con.release();
                     resolve(result);
                 })
             });
@@ -311,7 +383,7 @@ function insertclient({body}) {
                             return reject(err);
                         })
                     }
-
+                    con.release();
                     resolve(result);
                 })
             });
