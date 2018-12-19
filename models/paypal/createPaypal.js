@@ -13,70 +13,48 @@ paypal_service.configure({
 const createPaypal = {
 
 
-    createPaypal: () => {
-        return mypool.getCon()
-            .then(con => {
+    createPaypal: async ({con}) => {
+        const sql = "INSERT INTO paypal () VALUES ();";
+        const result = await con.query(sql);
+        return result;
 
-                var sql = "INSERT INTO paypal () VALUES ();";
-
-                return new Promise((resolve, reject) => {
-                    con.query(sql, (err, result) => {
-                        if (err) {
-                            con.rollback(function () {
-                                con.release();
-                                return reject(err);
-                            })
-                        }
-                        con.release();
-                        resolve(result);
-                    })
-                });
-            });
     },
 
-    get: ({paypal_id}) => {
+    get: async ({paypal_id}) => {
         console.log('paypal get init');
-        return mypool.getCon()
-            .then( (con) => {
-                console.log('then init in paypal get')
-                var sql = 'SELECT * FROM paypal\n'
-                    + "WHERE id = " + mysql.escape(Number(paypal_id));
+        const con = await mypool.getCon();
+        console.log('then init in paypal get');
+        const sql = 'SELECT * FROM paypal\n'
+            + "WHERE id = " + mysql.escape(Number(paypal_id));
+        console.log(sql);
+        console.log('paypal_id', paypal_id);
+        const result = await con.query(sql);
+        con.release();
+        return result[0];
 
-                console.log(sql);
-                console.log('paypal_id', paypal_id);
-                return new Promise((resolve, reject) => {
-                    con.query(sql, function (err, result) {
-                        con.release();
-                        if (err) {
-                            reject(err);
-                            return;
-                        }
-                        resolve(result);
-                    })
-                });
-            });
     },
 
-    refund: ({paypal_info}) => {
-        return new Promise((resolve, reject) => {
-            console.log('refund init');
-            const  data = {
-                amount: {
-                    total: JSON.parse(paypal_info[0].webhook).resource.amount.total,
-                    currency: JSON.parse(paypal_info[0].webhook).resource.amount.currency
-                }
+    refund: async ({paypal_info}) => {
+        console.log('refund init');
+        const data = {
+            amount: {
+                total: JSON.parse(paypal_info.webhook).resource.amount.total,
+                currency: JSON.parse(paypal_info.webhook).resource.amount.currency
             }
-            console.log('data',data);
-            paypal_service.sale.refund(String(paypal_info[0].paypal_id), data, (err, refund) => {
+        };
+        console.log('data', data);
+        return new Promise((resolve, reject) => {
+            paypal_service.sale.refund(String(paypal_info.paypal_id), data, (err, refund) => {
                 if (err) {
                     console.log('refund error', err);
-                    reject(err)
-                    return
+                    reject(err);
+                    return;
                 }
                 console.log(refund);
-                resolve({body: refund, id: JSON.parse(paypal_info[0].webhook).resource.custom});
+                resolve({body: refund, id: JSON.parse(paypal_info.webhook).resource.custom})
             })
         })
+
 
     }
 

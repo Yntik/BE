@@ -1,6 +1,5 @@
 const mysql = require('mysql');
 const mypool = require('../settings/MyPool');
-const mysql_promise = require('promise-mysql');
 
 
 const master = {

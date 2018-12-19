@@ -4,37 +4,27 @@ const mypool = require('../settings/MyPool')
 const product = {
 
 
-    get: (product_id) => {
-        return mypool.getCon()
-            .then((con) => {
-                var sql ;
-                if (product_id === undefined) {
-                    sql = 'SELECT * FROM product\n'
-                        + "ORDER BY product.size";
-                }
-                else {
-                    sql = 'SELECT * FROM product\n'
-                        + "WHERE id = " + mysql.escape(Number(product_id));
-                }
-                console.log('sql///', sql);
-                return new Promise((resolve, reject) => {
-                    con.query(sql, function (err, result) {
-                        con.release();
-                        if (err) {
-                            reject(err);
-                            return;
-                        }
-                        if (product_id === undefined) {
-                            resolve(result);
-                        }
-                        else {
-                            console.log('resuuuulttt', result);
-                            resolve({price: result[0].price});
-                        }
-
-                    })
-                });
-            });
+    get: async (product_id) => {
+        const con = await mypool.getCon();
+        var sql;
+        if (product_id === undefined) {
+            sql = 'SELECT * FROM product\n'
+                + "ORDER BY product.size";
+        }
+        else {
+            sql = 'SELECT * FROM product\n'
+                + "WHERE id = " + mysql.escape(Number(product_id));
+        }
+        console.log('sql///', sql);
+        const result = await con.query(sql);
+        con.release();
+        if (product_id === undefined) {
+            return result;
+        }
+        else {
+            console.log('resuuuulttt', result);
+            return (result[0]);
+        }
     },
 
     create: ({body}) => {
