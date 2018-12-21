@@ -1,9 +1,8 @@
-const mysql = require('mysql');
 const mypool = require('../../settings/MyPool');
 const OrderModel = require('../orders');
 const paypal_service = require('paypal-rest-sdk');
-const webhookIds = require('../../settings/paypal');
 const productModel = require('../product');
+const config = require('../../settings/paypal');
 
 
 paypal_service.configure({
@@ -39,8 +38,8 @@ const paypal = {
             })
             .then(result => {
                 price = result;
-                console.log(price,'===', body.resource.amount.total )
-                if (Number(price.price) !== Number(body.resource.amount.total)){
+                console.log(price, '===', body.resource.amount.total)
+                if (Number(price.price) !== Number(body.resource.amount.total)) {
 
                     return Promise.reject(new Error('Validation error'));
 
@@ -76,7 +75,7 @@ const paypal = {
             paypal_service.notification.webhookEvent.verify(req.headers, req.body, webhookId, (error, response) => {
                 if (error) {
                     console.log(error);
-                    reject (error);
+                    reject(error);
                 } else {
                     console.log(response);
 

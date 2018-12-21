@@ -4,7 +4,7 @@ const nodemailer = require('nodemailer');
 const createPaypal = require('./paypal/createPaypal');
 const webhookModel = require('./paypal/webhook');
 const productModel = require('./product');
-const deleteModel = require('./delete')
+const deleteModel = require('./delete');
 
 const order = {
 

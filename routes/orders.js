@@ -11,6 +11,7 @@ router.get('/orders', (req, res) => {
 });
 
 router.post('/orders', (req, res) => {
+    console.log(req.body);
     OrderModel.create({ body: req.body })
         .then(result => res.status(200).json({ success: true, error: false, data: result }))
         .catch(err => res.status(501).json({ success: false, error: true, data: err }));

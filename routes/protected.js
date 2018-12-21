@@ -41,6 +41,7 @@ router.delete('/clients', clients);
 router.use(cors(config.CORS_OPTIONS));
 // Add new function with name 'authenticate'
 router.authenticate = function (req, res) {
+    console.log('react');
     var con = mysql.createConnection(config.MYSQL_OPTION);
     var username = req.body.username;
     var password = req.body.password;

@@ -12,7 +12,7 @@ const paypal = require('./routes/paypal')
 
 
 var app = express();
-var port = process.env.PORT || config.BACK_END_PORT;
+var port = 3100;//process.env.PORT || config.BACK_END_PORT;
 
 
 
