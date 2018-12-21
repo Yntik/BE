@@ -3,6 +3,7 @@ const mypool = require('../settings/MyPool');
 const nodemailer = require('nodemailer');
 const createPaypal = require('./paypal/createPaypal');
 const webhookModel = require('./paypal/webhook');
+const refundModel = require('./paypal/refund');
 const productModel = require('./product');
 const deleteModel = require('./delete');
 
@@ -134,14 +135,14 @@ const order = {
             await deleteModel.delete({query: req.query, con: con});
             console.log("get paypal");
             console.log(req.query.paypal_id);
-            const result = await createPaypal.get({paypal_id: req.query.paypal_id});
+            const result = await createPaypal.get({paypal_id: Number(req.query.paypal_id)});
             console.log(result);
             if (result.state_payment !== 0) {
                 //refund
                 console.log("do refund");
                 const resolve = await createPaypal.refund({paypal_info: result});
-                console.log("store webhook");
-                await webhookModel.storeWebhook(resolve.body, {id: resolve.id});
+                console.log("store refund");
+                await refundModel.storeRefund({body: resolve.body, paypal_id: result.paypal_id});
             }
             console.log("delete paypal");
             await deleteModel.delete({query: {id: req.query.paypal_id, route: 'paypal'}, con: con});

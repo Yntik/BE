@@ -5,11 +5,7 @@ const productModel = require('../product');
 const config = require('../../settings/paypal');
 
 
-paypal_service.configure({
-    'mode': 'sandbox', //sandbox or live
-    'client_id': 'Adr6A_xRMrDnvbJ9Bvu20s0uDNODmFFj_LKtuP4ar343E7buS6u4aLQzxvZbFJTdlKRHIXkKnA2qJvkW',
-    'client_secret': 'EOZ1Giqc4-erp98mo6vLDYq-YomzEUtItxO69UH4sVfPdbAbW-k2O8guk0TC2rGyVjdFOpIzpXAhGY86'
-});
+paypal_service.configure(config.paypal_config);
 
 const paypal = {
 
@@ -71,7 +67,7 @@ const paypal = {
 
     verify: ({req, webhookId}) => {
         return new Promise((resolve, reject) => {
-            console.log('request++++')
+            console.log('request++++');
             paypal_service.notification.webhookEvent.verify(req.headers, req.body, webhookId, (error, response) => {
                 if (error) {
                     console.log(error);
@@ -82,10 +78,10 @@ const paypal = {
                     // Verification status must be SUCCESS
                     if (response.verification_status === "SUCCESS") {
                         console.log("It was a success.");
-                        resolve();
+                        resolve(1);
                     } else {
                         console.log("It was a failed verification");
-                        reject("It was a failed verification");
+                        resolve(0);
                     }
 
                 }
