@@ -22,7 +22,7 @@ if (conf.get('env') === 'production') {
     // в боевом окружении используем другой порт и сервер БД
     conf.load({
         CORS: {
-            origin: ['http://localhost:4200', 'https://8f58a176.ngrok.io', 'http://localhost:3000']
+            origin: ['http://localhost:4200', 'https://c8140327.ngrok.io', 'http://localhost:3000']
         }
     });
 }
@@ -30,7 +30,6 @@ const config = {
     BACK_END_PORT: 3000,
     CORS_OPTIONS: conf.get('CORS'),
     MYSQL_OPTION: OPTION.MYSQL_OPTION,
-
     // Token life time
     JWT_EXPIRATION_TIME: 3601, // 1h
     // https://www.random.org/strings/?num=10&len=10&digits=on&upperalpha=on&loweralpha=on&unique=on&format=html&rnd=new
