@@ -1,7 +1,6 @@
 const mypool = require('../../settings/MyPool');
 const mysql = require('mysql');
 const paypal_service = require('paypal-rest-sdk');
-const webhookModel = require('./webhook');
 const config = require('../../settings/paypal');
 
 

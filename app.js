@@ -33,6 +33,7 @@ app.get('/product',price) ;
 app.get('/free-master',masters);
 app.post('/orders',orders);
 app.post('/paypal',paypal);
+app.post('/paypal/delete',paypal);
 
 
 

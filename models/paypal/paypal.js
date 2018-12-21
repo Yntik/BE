@@ -68,7 +68,6 @@ const paypal = {
     verify: ({req, webhookId}) => {
         return new Promise((resolve, reject) => {
             console.log('request++++');
-            console.log(config.paypal_config);
             paypal_service.notification.webhookEvent.verify(req.headers, req.body, webhookId, (error, response) => {
                 if (error) {
                     console.log(error);
@@ -79,10 +78,10 @@ const paypal = {
                     // Verification status must be SUCCESS
                     if (response.verification_status === "SUCCESS") {
                         console.log("It was a success.");
-                        resolve();
+                        resolve(1);
                     } else {
                         console.log("It was a failed verification");
-                        reject("It was a failed verification");
+                        resolve(0);
                     }
 
                 }
