@@ -11,7 +11,7 @@ var conf = convict({
         doc: 'The domen',
         format: 'url',
         default: {
-            origin: ['https://pure-ocean-58040.herokuapp.com','https://mighty-harbor-39325.herokuapp.com'],
+            origin: 'https://mighty-harbor-39325.herokuapp.com',
             optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
         },
         env: "NODE_ENV"
