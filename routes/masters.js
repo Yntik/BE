@@ -5,6 +5,7 @@ var DeleteModel = require('../models/delete');
 
 
 router.get('/free-master', (req, res) => {
+    console.log('success');
     MasterModel.getFreeMaster({ query: req.query })
         .then(result => res.status(200).json({ success: true, error: false, data: result }))
         .catch(err => res.status(501).json({ success: false, error: true, data: err }));

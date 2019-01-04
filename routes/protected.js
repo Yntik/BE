@@ -62,8 +62,7 @@ router.authenticate = function (req, res) {
         con.query(sql, function (err, result) {
             con.end();
             if (err || result.length == 0) {
-                res.status(403);
-                res.json({success: false, error: 1, data: 'Login failed!'});
+                res.status(403).json({success: false, error: 1, data: 'Login failed!'});
                 return;
             }
             console.log('result', result);
@@ -104,7 +103,6 @@ router.use(function (req, res, next) {
 
 router.get('/checktoken', function (req, res) {
     var token = req.body.token || req.headers['token'];
-    console.log("chektoken", token);
     if (token) {
         jwt.verify(token, config.JWT_SECRET_KEY, function (err) {
             if (err) {

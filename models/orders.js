@@ -6,6 +6,7 @@ const webhookModel = require('./paypal/webhook');
 const refundModel = require('./paypal/refund');
 const productModel = require('./product');
 const deleteModel = require('./delete');
+const isEmail = require( "sane-email-validation" );
 
 const order = {
 
@@ -38,10 +39,10 @@ const order = {
     create: async ({body}) => {
         const con = await mypool.getCon();
         try {
-
             if (body.client.length < 3) {
                 throw new Error('not validation');
-            } else if (!(body.size > 0 && body.size <= 3)) {
+            }
+            if ( !isEmail( body.email ) ) {
                 throw new Error('not validation');
             }
             /* Begin transaction */
@@ -61,7 +62,7 @@ const order = {
             const result_client = await insertclient({body: body, con: con});
             client_id = result_client.insertId;
             console.log('checkproduct');
-            product = await productModel.get(body.size);
+            product = await productModel.get(body.product);
             console.log('createPaypal');
             const result_paypal = await createPaypal.createPaypal({con: con});
             paypal_id = result_paypal.insertId;

@@ -34,6 +34,7 @@ const master = {
         }
 
         const result = await con.query(sql);
+        console.log(result);
         con.release();
         return result;
     },
