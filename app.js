@@ -11,7 +11,7 @@ const orders = require('./routes/orders');
 const paypal = require('./routes/paypal');
 
 var app = express();
-var port = 3200;//process.env.PORT || config.BACK_END_PORT;
+var port = process.env.PORT || config.BACK_END_PORT;
 
 
 

@@ -11,7 +11,7 @@ var conf = convict({
         doc: 'The domen',
         format: 'url',
         default: {
-            origin: 'https://mighty-harbor-39325.herokuapp.com',
+            origin: ['http://localhost:4200', 'http://localhost:3000', 'https://mighty-harbor-39325.herokuapp.com', 'https://pure-ocean-58040.herokuapp.com'],
             optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
         },
         env: "NODE_ENV"
@@ -22,7 +22,7 @@ if (conf.get('env') === 'production') {
     // в боевом окружении используем другой порт и сервер БД
     conf.load({
         CORS: {
-            origin: ['http://localhost:4200', 'https://c8140327.ngrok.io', 'http://localhost:3000']
+            origin: ['http://localhost:4200', 'https://c8140327.ngrok.io', 'http://localhost:3000', 'https://mighty-harbor-39325.herokuapp.com']
         }
     });
 }
@@ -31,7 +31,7 @@ const config = {
     CORS_OPTIONS: conf.get('CORS'),
     MYSQL_OPTION: OPTION.MYSQL_OPTION,
     // Token life time
-    JWT_EXPIRATION_TIME: 3601, // 1h
+    JWT_EXPIRATION_TIME: 3600, // 1h
     // https://www.random.org/strings/?num=10&len=10&digits=on&upperalpha=on&loweralpha=on&unique=on&format=html&rnd=new
     // ->
     // vIh2YQonCj
