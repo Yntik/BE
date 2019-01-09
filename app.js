@@ -9,6 +9,7 @@ const price = require('./routes/product');
 const masters = require('./routes/masters');
 const orders = require('./routes/orders');
 const paypal = require('./routes/paypal');
+const logout = require('./routes/logout');
 
 var app = express();
 var port = process.env.PORT || config.BACK_END_PORT;
@@ -27,7 +28,8 @@ app.use(bodyParser.urlencoded({
 
 
 app.use('/protected', protected);
-app.post('/login', protected.authenticate);
+// app.post('/login', protected.authenticate);
+app.post('/logout',logout) ;
 app.get('/cities',citys) ;
 app.get('/product',price) ;
 app.get('/free-master',masters);
