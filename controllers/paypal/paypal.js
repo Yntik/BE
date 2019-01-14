@@ -1,7 +1,7 @@
 const mypool = require('../../settings/MyPool');
-const OrderModel = require('../orders');
+const OrderModel = require('../../models/orders');
 const paypal_service = require('paypal-rest-sdk');
-const productModel = require('../product');
+const productModel = require('../../models/product');
 const config = require('../../settings/paypal');
 
 
@@ -36,9 +36,7 @@ const paypal = {
                 price = result;
                 console.log(price, '===', body.resource.amount.total)
                 if (Number(price.price) !== Number(body.resource.amount.total)) {
-
                     return Promise.reject(new Error('Validation error'));
-
                 }
                 console.log('get con');
                 return mypool.getCon()

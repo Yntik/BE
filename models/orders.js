@@ -1,126 +1,149 @@
 const mysql = require('mysql');
 const mypool = require('../settings/MyPool');
 const nodemailer = require('nodemailer');
-const createPaypal = require('./paypal/createPaypal');
-const webhookModel = require('./paypal/webhook');
-const refundModel = require('./paypal/refund');
-const productModel = require('./product');
+const createPaypal = require('../controllers/paypal/createPaypal');
+const webhookModel = require('../controllers/paypal/webhook');
+const refundModel = require('../controllers/paypal/refund');
+const productModel = require('../controllers/products');
 const deleteModel = require('./delete');
-const isEmail = require( "sane-email-validation" );
+const isEmail = require("sane-email-validation");
+
+
+const Sequelize = require('sequelize');
+const db = require('../settings/sequelize');
+const Op = Sequelize.Op;
+const Cities = require('../models/cities');
+const Masters = require('../models/masters');
+const Products = require('../models/product');
+const Clients = require('../models/clients');
+const Paypal = require('../models/paypal');
+const Orders = db.define('orders', {
+    idclient: {
+        type: Sequelize.INTEGER
+    },
+    price: {
+        type: Sequelize.STRING
+    },
+    idproduct: {
+        type: Sequelize.INTEGER
+    },
+    idcity: {
+        type: Sequelize.INTEGER
+    },
+    idmaster: {
+        type: Sequelize.INTEGER
+    },
+    start: {
+        type: Sequelize.DATE
+    },
+    end: {
+        type: Sequelize.DATE
+    }
+});
+Orders.belongsTo(Cities, {foreignKey: 'idcity'});
+Orders.belongsTo(Masters, {foreignKey: 'idmaster'});
+Orders.belongsTo(Clients, {foreignKey: 'idclient'});
+Orders.belongsTo(Products, {foreignKey: 'idproduct'});
+Orders.belongsTo(Paypal, {foreignKey: 'idpaypal'});
 
 const order = {
 
     get: async (order_id) => {
         console.log('get orders init');
-        const con = await mypool.getCon();
-        var sql;
         if (order_id === undefined) {
-            console.log('order id === undefined');
-            sql = 'SELECT orders.id, orders.idclient, orders.idpaypal, orders.idmaster, orders.idcity, orders.idproduct, orders.price, orders.start, orders.end, clients.name client, clients.email, masters.name, masters.surname, product.size, cities.city\n'
-                + "FROM orders\n"
-                + "LEFT JOIN clients ON orders.idclient = clients.id\n"
-                + "LEFT JOIN masters ON orders.idmaster = masters.id\n"
-                + "LEFT JOIN product ON orders.idproduct = product.id\n"
-                + "LEFT JOIN cities ON orders.idcity = cities.id\n"
-                + "ORDER BY orders.start DESC";
+            return await Orders.findAll({
+                include: [
+                    {model: Cities},
+                    {model: Masters},
+                    {model: Clients},
+                    {model: Paypal},
+                    {model: Products}
+                ]
+            })
         }
         else {
-            console.log('made query order');
-            sql = 'SELECT * FROM orders\n'
-                + 'WHERE id = ' + mysql.escape(order_id);
+            return await Orders.findAll({
+                where: {
+                    id: order_id,
+                }
+            });
         }
-        console.log(sql);
-        console.log('select order');
-        const result = await con.query(sql);
-        con.release();
-        return result;
     },
 
     create: async ({body}) => {
-        const con = await mypool.getCon();
         try {
             if (body.client.length < 3) {
                 throw new Error('not validation');
             }
-            if ( !isEmail( body.email ) ) {
+            if (!isEmail(body.email)) {
                 throw new Error('not validation');
             }
             /* Begin transaction */
-            console.log('Begin transaction ');
-            await con.query('START TRANSACTION');
-
-            console.log('checkmaster');
-            await checkmaster({body: body});
-
-            console.log('checkmasterisfree');
-            await checkmasterisfree({body: body});
-
-            let client_id;
-            let paypal_id;
-            let product;
-            console.log('insertclient');
-            const result_client = await insertclient({body: body, con: con});
-            client_id = result_client.insertId;
-            console.log('checkproduct');
-            product = await productModel.get(body.product);
-            console.log('createPaypal');
-            const result_paypal = await createPaypal.createPaypal({con: con});
-            paypal_id = result_paypal.insertId;
-            console.log('insertorder', paypal_id);
-            const result_order = await insertorder({
-                body: body,
-                product: product,
-                client_id: client_id,
-                paypal_id: paypal_id,
-                con: con
+            return db.transaction(async (t) => {
+                console.log('Begin transaction ');
+                console.log('checkmaster');
+                await checkmaster({body: body});
+                console.log('checkmasterisfree');
+                await checkmasterisfree({body: body});
+                let client_id;
+                let paypal_id;
+                let product;
+                console.log('insertclient');
+                const result_client = await insertclient({body: body});
+                client_id = result_client.id;
+                console.log('checkproduct');
+                product = await productModel.get(body.product);
+                console.log('result product', product);
+                console.log('createPaypal');
+                const result_paypal = await createPaypal.createPaypal();
+                paypal_id = result_paypal.id;
+                console.log('insertorder', paypal_id);
+                const result_order = await insertorder({
+                    body: body,
+                    product: product,
+                    client_id: client_id,
+                    paypal_id: paypal_id
+                });
+                console.log('do commit');
+                console.log('Transaction Complete.');
+                /* End transaction */
+                var transporter = nodemailer.createTransport({
+                    service: 'Gmail',
+                    auth: {
+                        user: 'clockwiseclockware@gmail.com',
+                        pass: 'passwordsecret'
+                    }
+                });
+                console.log('created');
+                transporter.sendMail({
+                    from: 'clockwiseclockware@gmail.com',
+                    to: body.email,
+                    subject: 'Заказ принят!',
+                    text: 'Ваш заказ поступил в обработку!'
+                });
+                return result_order;
             });
-            console.log('do commit');
-            await con.query('COMMIT');
-            con.release();
-            console.log('Transaction Complete.');
-            /* End transaction */
-            var transporter = nodemailer.createTransport({
-                service: 'Gmail',
-                auth: {
-                    user: 'clockwiseclockware@gmail.com',
-                    pass: 'passwordsecret'
-                }
-            });
-            console.log('created');
-            transporter.sendMail({
-                from: 'clockwiseclockware@gmail.com',
-                to: body.email,
-                subject: 'Заказ принят!',
-                text: 'Ваш заказ поступил в обработку!'
-            });
-            return result_order;
         } catch (err) {
             console.log(err);
             console.log('do rollback!');
-            await con.query('ROLLBACK');
-            con.release();
             throw new Error(err);
         }
 
     },
 
     edit: async ({body}) => {
-        console.log('body', body);
-        const con = await mypool.getCon();
         try {
-            con.beginTransaction();
-            await updateclient({body: body, con: con})
-            const result = await updateorder({body: body, con: con});
-            con.commit();
-            console.log('Transaction Complete.');
-            con.release();
-            return result;
-            /* End transaction */
+            let result;
+            return db.transaction(async (t) => {
+                await updateclient({body: body});
+                result = await updateorder({body: body});
+                /* End transaction */
+                console.log('Transaction Complete.');
+                return result;
+            });
         } catch (err) {
             console.log(err);
             console.log('do rollback!');
-            await con.query('ROLLBACK');
-            con.release();
             throw new Error(err);
         }
 
@@ -128,86 +151,70 @@ const order = {
     },
 
     deleteOrder: async ({req}) => {
-        const con = await mypool.getCon();
         try {
-            console.log("transaction start");
-            await con.query('START TRANSACTION');
-            console.log("delete order");
-            await deleteModel.delete({query: req.query, con: con});
-            console.log("get paypal");
-            console.log(req.query.paypal_id);
-            const result = await createPaypal.get({paypal_id: Number(req.query.paypal_id)});
-            console.log(result);
-            if (result.state_payment !== 0) {
-                //refund
-                console.log("do refund");
-                const resolve = await createPaypal.refund({paypal_info: result});
-                console.log("store refund");
-                await refundModel.storeRefund({body: resolve.body, paypal_id: result.paypal_id});
-            }
-            console.log("delete paypal");
-            await deleteModel.delete({query: {id: req.query.paypal_id, route: 'paypal'}, con: con});
-            console.log('do commit');
-            await con.query('COMMIT');
-            con.release();
-            console.log('Transaction Complete.');
-            /* End transaction */
+            return db.transaction(async (t) => {
+                console.log("transaction start");
+                console.log('delete init');
+                await Orders.destroy({where: {id: Number(req.query.id)}});
+                console.log("delete order");
+                console.log("get paypal");
+                console.log(req.query.paypal_id);
+                const result = await createPaypal.get({paypal_id: Number(req.query.paypal_id)});
+                console.log(result);
+                if (result.state_payment !== 0) {
+                    //refund
+                    console.log("do refund");
+                    const resolve = await createPaypal.refund({paypal_info: result});
+                    console.log("store refund");
+                    await refundModel.storeRefund({body: resolve.body, paypal_id: result.paypal_id});
+                }
+                console.log("delete paypal");
+                createPaypal.delete({query: {id: req.query.paypal_id}});
+                console.log('do commit');
+                console.log('Transaction Complete.');
+                /* End transaction */
+            });
         } catch (err) {
-            await con.query('ROLLBACK');
-            con.release();
             throw new Error(err);
         }
-
-
     }
 };
 
 
-async function updateclient({body, con}) {
-    const sql = 'UPDATE clients SET name = ?, email = ?, idcity = ? WHERE id  = ?';
-    await con.query(sql, [
-        body.client,
-        body.email,
-        Number(body.city),
-        Number(body.idclient)
-    ]);
-    return con;
+async function updateclient({body}) {
+    return await Clients.update({
+        name: body.client,
+        email: body.email,
+        idcity: Number(body.city)
+    }, {where: {id: Number(body.idclient)}})
 };
 
 
-async function updateorder({body, con}) {
-
-    var start = new Date(body.datetime);
-    var end = new Date(body.datetime);
+async function updateorder({body}) {
+    let start = new Date(body.datetime);
+    let end = new Date(body.datetime);
     end.setHours(end.getHours() + Number(body.size));
-    const sql = 'UPDATE orders SET idclient = ?, idcity = ?, idmaster = ?, idproduct = ?, price = ?, start = ?, end = ?  WHERE id  = ?';
-    const result = await con.query(sql, [
-        Number(body.idclient),
-        Number(body.city),
-        Number(body.idmaster),
-        Number(body.idproduct),
-        Number(body.price),
-        start,
-        end,
-        Number(body.id)
-    ]);
-    return result;
+    return await Orders.update({
+        idclient: Number(body.idclient),
+        idcity: Number(body.city),
+        idmaster: Number(body.idmaster),
+        idproduct: Number(body.idproduct),
+        price: Number(body.price),
+        start: start,
+        end: end
+    }, {where: {id: Number(body.id)}})
 };
 
 
 async function checkmaster({body}) {
-    const con = await mypool.getCon();
-    const sql = "SELECT * FROM masters\n"
-        + "WHERE masters.name = "
-        + mysql.escape(body.master.name) + " AND "
-        + "masters.surname = "
-        + mysql.escape(body.master.surname) + ' AND '
-        + "masters.rating = "
-        + mysql.escape(body.master.rating) + ' AND '
-        + "masters.idcity = "
-        + mysql.escape(body.master.idcity) + " ;";
-    const result = await con.query(sql);
-    con.release();
+    let result = await Masters.findAll({
+        where: {
+            name: body.master.name,
+            surname: body.master.surname,
+            rating: body.master.rating,
+            idcity: body.master.idcity,
+        }
+    });
     if (result.length === 0) {
         throw new Error('Master not found');
     }
@@ -216,52 +223,81 @@ async function checkmaster({body}) {
 
 
 async function checkmasterisfree({body}) {
-    const con = await mypool.getCon();
+
+    // const con = await mypool.getCon();
     var start = new Date(body.datetime);
     var end = new Date(body.datetime);
     end.setHours(end.getHours() + Number(body.size));
-    const sql = "SELECT * FROM orders\n"
-        + "WHERE idmaster = " + mysql.escape(Number(body.master.id)) + " AND (start <= " + mysql.escape(start) + " AND " + mysql.escape(start) + " <= end" + "\n"
-        + "OR start <= " + mysql.escape(end) + " AND " + mysql.escape(end) + " <= end)";
-    const result = await con.query(sql);
-    con.release();
+    let result = await Orders.findAll({
+        where: {
+            idmaster: Number(body.master.id),
+            [Op.and]: [
+                {
+                    [Op.or]: [
+                        {
+                            start: {
+                                [Op.lte]: mysql.escape(start)
+                            },
+                            end: {
+                                [Op.gte]: mysql.escape(start)
+                            }
+                        }, {
+                            start: {
+                                [Op.lte]: mysql.escape(end)
+                            },
+                            end: {
+                                [Op.gte]: mysql.escape(end)
+                            }
+                        }]
+                }
+            ]
+        }
+    });
+    // const sql = "SELECT * FROM orders\n"
+    //     + "WHERE idmaster = " + mysql.escape(Number(body.master.id)) + " AND (start <= " + mysql.escape(start) + " AND " + mysql.escape(start) + " <= end" + "\n"
+    //     + "OR start <= " + mysql.escape(end) + " AND " + mysql.escape(end) + " <= end)";
+    // const result = await con.query(sql);
+    // con.release();
     if (result.length !== 0) {
+        console.log('мастерс');
         throw new Error('Master not found');
     }
     return (result);
 };
 
 
-async function insertorder({body, product, client_id, paypal_id, con}) {
+async function insertorder({body, product, client_id, paypal_id}) {
     console.log(typeof product, " product ", product);
     var start = new Date(body.datetime);
     var end = new Date(body.datetime);
     end.setHours(end.getHours() + Number(product.size));
-    const sql = "INSERT INTO orders (idclient, price, idproduct, idcity, idmaster, start, end, idpaypal) VALUES (\n"
-        + mysql.escape(client_id) + ','
-        + mysql.escape(String(product.price)) + ','
-        + mysql.escape(Number(product.id)) + ','
-        + mysql.escape(Number(body.city)) + ','
-        + mysql.escape(Number(body.master.id)) + ','
-        + mysql.escape(start) + ','
-        + mysql.escape(end) + ','
-        + mysql.escape(paypal_id) + ");\n";
-    const result = await con.query(sql);
-    console.log(result);
-    return result;
+    return await Clients.build({
+        idclient: client_id,
+        price: String(product.price),
+        idproduct: Number(product.id),
+        idcity: Number(body.city),
+        idmaster: Number(body.master.id),
+        start: start,
+        end: end,
+        idpaypal: paypal_id
+    }).save();
+    // const sql = "INSERT INTO orders (idclient, price, idproduct, idcity, idmaster, start, end, idpaypal) VALUES (\n"
+    //     + mysql.escape(client_id) + ','
+    //     + mysql.escape(String(product.price)) + ','
+    //     + mysql.escape(Number(product.id)) + ','
+    //     + mysql.escape(Number(body.city)) + ','
+    //     + mysql.escape(Number(body.master.id)) + ','
+    //     + mysql.escape(start) + ','
+    //     + mysql.escape(end) + ','
+    //     + mysql.escape(paypal_id) + ");\n";
+    // const result = await con.query(sql);
+    // console.log(result);
+    // return result;
 }
 
 
-async function insertclient({body, con}) {
-    const sql = "INSERT INTO clients (name, email, idcity) VALUES (\n"
-        + mysql.escape(body.client) + ', '
-        + mysql.escape(body.email) + ', '
-        + body.city + ")\n"
-        + "ON DUPLICATE KEY UPDATE\n"
-        + "name = " + mysql.escape(body.client) + ',\n'
-        + "idcity =" + body.city + ";\n";
-    const result = await con.query(sql);
-    return result;
+async function insertclient({body}) {
+    return await Clients.build({name: body.client, email: body.email, idcity: body.city}).save();
 };
 
 

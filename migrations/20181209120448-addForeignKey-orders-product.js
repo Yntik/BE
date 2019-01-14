@@ -16,7 +16,7 @@ exports.setup = function(options, seedLink) {
 
 exports.up = function (db)
 {
-    return db.addForeignKey('orders', 'product', 'idproduct',
+    return db.addForeignKey('orders', 'products', 'idproduct',
         {
             'idproduct': 'id'
         },

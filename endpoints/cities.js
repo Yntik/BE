@@ -1,8 +1,8 @@
 var express = require('express')
 var router = express.Router()
 
-var CityModel = require('../models/cities')
-var DeleteModel = require('../models/delete')
+var CityModel = require('../controllers/cities');
+
 
 
 router.get('/cities', (req, res) => {
@@ -14,7 +14,7 @@ router.get('/cities', (req, res) => {
 
 router.post('/cities', (req, res) => {
     CityModel.create({ newcity: req.body.newcity })
-        .then(result => res.status(200).json({ success: true, error: false, data: result }))
+        .then(result => res.status(201).json({ success: true, error: false, data: result }))
         .catch(err => res.status(501).json({ success: false, error: true, data: err }));
 });
 
@@ -26,8 +26,8 @@ router.put('/cities', (req, res) => {
 });
 
 router.delete('/cities', (req, res) => {
-    DeleteModel.delete({ query: req.query })
-        .then(result => res.status(200).json({ success: true, error: false, data: result }))
+    CityModel.delete({ query: req.query })
+        .then(result => res.status(204).json({ success: true, error: false, data: result }))
         .catch(err => res.status(501).json({ success: false, error: true, data: err }));
 });
 

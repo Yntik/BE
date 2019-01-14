@@ -1,65 +1,13 @@
-const mysql = require('mysql')
-const mypool = require('../settings/MyPool')
+const Sequelize = require('sequelize');
+const db = require('../settings/sequelize');
+const Op = Sequelize.Op;
 
-const cities = {
-
-
-    get: () => {
-
-        return mypool.getCon()
-            .then((con) => {
-                var sql = 'SELECT * FROM cities';
-
-                return new Promise((resolve, reject) => {
-                    con.query(sql, function (err, result) {
-                        if (err) {
-                            reject(err);
-                            return;
-                        }
-                        con.release();
-                        resolve(result);
-                    })
-                });
-            });
-    },
-
-    create: ({newcity}) => {
-        return mypool.getCon()
-            .then(con => {
-                var sql = `INSERT INTO cities (city) VALUES (${mysql.escape(newcity)})`;
-
-                return new Promise((resolve, reject) => {
-                    con.query(sql, (err, result) => {
-                        if (err) {
-                            return reject(err);
-                        }
-                        con.release();
-                        resolve(result);
-                    })
-                });
-            });
-    },
-
-    edit: ({editcity, id}) => {
-        return mypool.getCon()
-            .then(con => {
-                var sql = 'UPDATE cities SET city = ? WHERE id = ?'
-                return new Promise((resolve, reject) => {
-                    con.query(sql, [
-                        editcity,
-                        id
-                    ], function (err, result) {
-                        if (err) {
-                            return reject(err);
-                        }
-                        con.release();
-                        resolve(result);
-                    })
-                });
-            });
+const Cities = db.define('cities', {
+    city: {
+        type: Sequelize.STRING
     }
+});
+module.exports = Cities;
 
-};
 
-
-module.exports = cities;
+// module.exports = cities;

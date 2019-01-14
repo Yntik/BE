@@ -22,7 +22,7 @@ if (conf.get('env') === 'production') {
     // в боевом окружении используем другой порт и сервер БД
     conf.load({
         CORS: {
-            origin: ['http://localhost:4200', 'https://984f3cde.ngrok.io', 'http://localhost:3000', 'https://mighty-harbor-39325.herokuapp.com']
+            origin: ['http://localhost:4200', 'https://fc0d09ea.ngrok.io', 'http://localhost:3000', 'https://mighty-harbor-39325.herokuapp.com']
         }
     });
 }

@@ -1,11 +1,12 @@
-var express = require('express');
-var router = express.Router();
-var ProductModel = require('../models/product')
-var DeleteModel = require('../models/delete')
+const express = require('express');
+const router = express.Router();
+const ProductModel = require('../controllers/products');
+
 
 
 
 router.get('/product', (req, res) => {
+    console.log('get products');
     ProductModel.get()
         .then(result => res.status(200).json({ success: true, error: false, data: result }))
         .catch(err => res.status(501).json({ success: false, error: true, data: err }));
@@ -14,7 +15,7 @@ router.get('/product', (req, res) => {
 
 router.post('/product', (req, res) => {
     ProductModel.create({ body: req.body})
-        .then(result => res.status(200).json({ success: true, error: false, data: result }))
+        .then(result => res.status(201).json({ success: true, error: false, data: result }))
         .catch(err => res.status(501).json({ success: false, error: true, data: err }));
 });
 
@@ -25,8 +26,8 @@ router.put('/product', (req, res) => {
 });
 
 router.delete('/product', (req, res) => {
-    DeleteModel.delete({ query: req.query })
-        .then(result => res.status(200).json({ success: true, error: false, data: result }))
+    ProductModel.delete({ query: req.query })
+        .then(result => res.status(204).json({ success: true, error: false, data: result }))
         .catch(err => res.status(501).json({ success: false, error: true, data: err }));
 });
 

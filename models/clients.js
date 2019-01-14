@@ -1,16 +1,15 @@
 const Sequelize = require('sequelize');
 const db = require('../settings/sequelize');
 const Op = Sequelize.Op;
-const Cities = require('../models/cities');
-const Masters = db.define('masters', {
+const Cities = require('../models/cities')
+
+const Clients = db.define('clients', {
     name: {
         type: Sequelize.STRING
     },
-    surname: {
+
+    email: {
         type: Sequelize.STRING
-    },
-    rating: {
-        type: Sequelize.INTEGER
     },
 
     idcity: {
@@ -18,6 +17,6 @@ const Masters = db.define('masters', {
     },
 });
 
-Masters.belongsTo(Cities, { foreignKey: 'idcity' });
+Clients.belongsTo(Cities, { foreignKey: 'idcity' })
+module.exports = Clients;
 
-module.exports = Masters;

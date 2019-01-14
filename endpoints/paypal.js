@@ -1,16 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const paypalModel = require('../models/paypal/paypal');
-const webhook = require('../models/paypal/webhook');
+const paypalModel = require('../controllers/paypal/paypal');
+const webhook = require('../controllers/paypal/webhook');
 const webhookIds = require('../settings/paypal');
 
 router.post('/paypal', (req, res) => {
-    console.log('request ++');
-    console.log(typeof req.body);
-    /*console.log('headers', req.headers);*/
     paypalModel.verify({req: req, webhookId: webhookIds.Payment_sale_completed})
         .then(resolve => {
-            var state = resolve;
+            let state = resolve;
             console.log(resolve);
             paypalModel.stateChange({body: req.body})
                 .then(result => {

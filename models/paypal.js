@@ -2,13 +2,15 @@ const Sequelize = require('sequelize');
 const db = require('../settings/sequelize');
 const Op = Sequelize.Op;
 
-const Products = db.define('products', {
-    size: {
+const Paypal = db.define('paypal', {
+    state_payment: {
         type: Sequelize.INTEGER
     },
-    price: {
-        type: Sequelize.STRING
+    paypal_id: {
+        type: Sequelize.STRING,
+        defaultValue: true
     }
 });
-module.exports = Products;
+module.exports = Paypal;
+
 
