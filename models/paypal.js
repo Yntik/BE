@@ -9,6 +9,10 @@ const Paypal = db.define('paypal', {
     paypal_id: {
         type: Sequelize.STRING,
         defaultValue: true
+    },
+    webhook: {
+        type: Sequelize.JSON,
+        defaultValue: true
     }
 });
 module.exports = Paypal;

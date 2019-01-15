@@ -1,6 +1,6 @@
-const OrderModel = require('../../models/orders');
+const OrderModel = require('../orders');
 const paypal_service = require('paypal-rest-sdk');
-const productModel = require('../../models/product');
+const productModel = require('../products');
 const config = require('../../settings/paypal');
 const Paypal = require('../../models/paypal');
 
@@ -13,6 +13,7 @@ const paypal = {
         let order;
         let price;
         console.log(typeof body);
+        console.log(body);
         console.log('check comp');
         if (body.resource.state !== 'completed') {// completed
             throw new Error('not completed');
@@ -31,10 +32,9 @@ const paypal = {
             state_payment: 1,
             paypal_id: body.resource.id,
             webhook: JSON.stringify(body),
-            where: {id: order[0].idpaypal}
-        });
+        }, {where: {id: order[0].idpaypal}});
         console.log('paypal result', result);
-        return resolve({result: result, order: order});
+        return ({result: result, order: order});
 
     },
 

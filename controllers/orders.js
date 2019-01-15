@@ -31,7 +31,7 @@ const order = {
             return await Orders.findAll({
                 where: {
                     id: order_id,
-                }
+                },
             });
         }
     },
@@ -90,7 +90,7 @@ const order = {
                     text: 'Ваш заказ поступил в обработку!'
                 });
                 return result_order;
-            });
+            })
         } catch (err) {
             console.log(err);
             console.log('do rollback!');
@@ -150,6 +150,7 @@ const order = {
 
 
 async function updateclient({body, t}) {
+    console.log('body..', body);
     return await Clients.update({
         name: body.client,
         email: body.email,
@@ -162,7 +163,7 @@ async function updateorder({body, t}) {
     let start = new Date(body.datetime);
     let end = new Date(body.datetime);
     end.setHours(end.getHours() + Number(body.size));
-    return await Orders.update({
+        return await Orders.update({
         idclient: Number(body.idclient),
         idcity: Number(body.city),
         idmaster: Number(body.idmaster),
@@ -170,7 +171,7 @@ async function updateorder({body, t}) {
         price: Number(body.price),
         start: start,
         end: end
-    }, {where: {id: Number(body.id), transaction: t}})
+    }, {where: {id: Number(body.id)}, transaction: t})
 };
 
 
@@ -191,10 +192,8 @@ async function checkmaster({body}) {
 
 
 async function checkmasterisfree({body}) {
-
-    // const con = await mypool.getCon();
-    var start = new Date(body.datetime);
-    var end = new Date(body.datetime);
+    const start = new Date(body.datetime);
+    let end = new Date(body.datetime);
     end.setHours(end.getHours() + Number(body.size));
     let result = await Orders.findAll({
         where: {
@@ -230,7 +229,7 @@ async function checkmasterisfree({body}) {
         console.log('мастерс');
         throw new Error('Master not found');
     }
-    return (result);
+    return result;
 };
 
 

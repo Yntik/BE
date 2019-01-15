@@ -16,7 +16,7 @@ const createPaypal = {
 
     get: async ({paypal_id}) => {
         console.log('paypal get init');
-        let result = await Paypal.findOne({
+        let result = await Paypal.findAll({
             where: {id: Number(paypal_id)}
         });
         return result[0]
