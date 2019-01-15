@@ -268,8 +268,8 @@ async function checkmasterisfree({body}) {
 
 async function insertorder({body, product, client_id, paypal_id}) {
     console.log(typeof product, " product ", product);
-    var start = new Date(body.datetime);
-    var end = new Date(body.datetime);
+    let start = new Date(body.datetime);
+    let end = new Date(body.datetime);
     end.setHours(end.getHours() + Number(product.size));
     return await Clients.build({
         idclient: client_id,
@@ -281,18 +281,6 @@ async function insertorder({body, product, client_id, paypal_id}) {
         end: end,
         idpaypal: paypal_id
     }).save();
-    // const sql = "INSERT INTO orders (idclient, price, idproduct, idcity, idmaster, start, end, idpaypal) VALUES (\n"
-    //     + mysql.escape(client_id) + ','
-    //     + mysql.escape(String(product.price)) + ','
-    //     + mysql.escape(Number(product.id)) + ','
-    //     + mysql.escape(Number(body.city)) + ','
-    //     + mysql.escape(Number(body.master.id)) + ','
-    //     + mysql.escape(start) + ','
-    //     + mysql.escape(end) + ','
-    //     + mysql.escape(paypal_id) + ");\n";
-    // const result = await con.query(sql);
-    // console.log(result);
-    // return result;
 }
 
 

@@ -6,8 +6,8 @@ const master = {
     getFreeMaster: async ({query}) => {
         const con = await mypool.getCon();
 
-        const start = new Date(String(query.datetime));
-        const end = new Date(String(query.datetime));
+        let start = new Date(String(query.datetime));
+        let end = new Date(String(query.datetime));
         end.setHours(end.getHours() + Number(query.size));
 
         var sql = '';

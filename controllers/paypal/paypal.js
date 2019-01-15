@@ -3,64 +3,40 @@ const OrderModel = require('../../models/orders');
 const paypal_service = require('paypal-rest-sdk');
 const productModel = require('../../models/product');
 const config = require('../../settings/paypal');
-
+const Paypal = require('../../models/paypal');
 
 paypal_service.configure(config.paypal_config);
 
 const paypal = {
 
 
-    stateChange: ({body}) => {
+    stateChange: async ({body}) => {
         let order;
         let price;
         console.log(typeof body);
-        return new Promise((resolve, reject) => {
-            console.log('check comp');
-            if (body.resource.state !== 'completed') {// completed
-                reject();
-            }
-            console.log('check comp++');
-            resolve();
-        })
-            .then(() => {
-                console.log('get order');
+        console.log('check comp');
+        if (body.resource.state !== 'completed') {// completed
+            throw new Error('not completed');
+        }
+        console.log('check comp++');
+        console.log('get order');
+        order = await OrderModel.get(Number(body.resource.custom));
+        console.log('get price');
+        price = await productModel.get(order[0].idproduct);
+        console.log(price, '===', body.resource.amount.total);
+        if (Number(price.price) !== Number(body.resource.amount.total)) {
+            throw new Error('Validation error');
+        }
+        console.log('made query', order[0].idpaypal);
+        let result = await Paypal.update({
+            state_payment: 1,
+            paypal_id: body.resource.id,
+            webhook: JSON.stringify(body),
+            where: {id: order[0].idpaypal}
+        });
+        console.log('paypal result', result);
+        return resolve({result: result, order: order});
 
-                return OrderModel.get(Number(body.resource.custom))
-            })
-            .then(result => {
-                order = result;
-                console.log('get price');
-                return productModel.get(order[0].idproduct)
-            })
-            .then(result => {
-                price = result;
-                console.log(price, '===', body.resource.amount.total)
-                if (Number(price.price) !== Number(body.resource.amount.total)) {
-                    return Promise.reject(new Error('Validation error'));
-                }
-                console.log('get con');
-                return mypool.getCon()
-            })
-            .then(con => {
-                console.log('made query', order[0].idpaypal);
-                var sql = 'UPDATE paypal SET state_payment = ?, paypal_id = ?, webhook = ? WHERE id = ?'
-                return new Promise((resolve, reject) => {
-                    con.query(sql, [
-                        1,
-                        body.resource.id,
-                        JSON.stringify(body),
-                        order[0].idpaypal
-                    ], function (err, result) {
-                        if (err) {
-                            console.log('err', err);
-                            return reject(err);
-                        }
-                        con.release();
-                        console.log('paypal result', result);
-                        resolve({result: result, order: order});
-                    })
-                });
-            });
     },
 
     verify: ({req, webhookId}) => {
