@@ -1,4 +1,3 @@
-const mypool = require('../../settings/MyPool');
 const OrderModel = require('../../models/orders');
 const paypal_service = require('paypal-rest-sdk');
 const productModel = require('../../models/product');

@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var MasterModel = require('../controllers/(GETfreeMaster)masters');
+var MasterModel = require('../controllers/masters');
 var DeleteModel = require('../models/delete');
 
 

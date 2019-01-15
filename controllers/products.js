@@ -14,7 +14,7 @@ const product = {
                     id: product_id,
                 }
             });
-            return (result[0]);
+            return result[0];
         }
     },
 

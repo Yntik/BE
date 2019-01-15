@@ -10,13 +10,13 @@ paypal_service.configure(config.paypal_config);
 const createPaypal = {
 
 
-    createPaypal: async () => {
-        return await Paypal.create();
+    createPaypal: async ({t}) => {
+        return await Paypal.create({transaction: t});
     },
 
     get: async ({paypal_id}) => {
         console.log('paypal get init');
-        let result = await Paypal.findAll({
+        let result = await Paypal.findOne({
             where: {id: Number(paypal_id)}
         });
         return result[0]
@@ -46,9 +46,9 @@ const createPaypal = {
 
     },
 
-    delete: async ({query}) => {
+    delete: async ({query, t}) => {
         console.log('delete init');
-        return await Paypal.destroy({where: {id: Number(query.id)}})
+        return await Paypal.destroy({where: {id: Number(query.id)}, transaction: t})
     }
 
 };

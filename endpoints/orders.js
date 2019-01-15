@@ -1,7 +1,7 @@
-var express = require('express');
-var router = express.Router();
-var OrderModel = require('../models/orders');
-var DeleteModel = require('../models/delete');
+const express = require('express');
+const router = express.Router();
+const OrderModel = require('../controllers/orders');
+
 
 
 router.get('/orders', (req, res) => {
