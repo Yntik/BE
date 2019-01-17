@@ -1,36 +1,37 @@
-var express = require('express')
-var router = express.Router()
-
-var CityModel = require('../models/cities')
-var DeleteModel = require('../models/delete')
+const express = require('express');
+const router = express.Router();
+const OrderModel = require('../controllers/orders');
 
 
-router.get('/cities', (req, res) => {
-    CityModel.get()
+
+router.get('/orders', (req, res) => {
+    OrderModel.get()
         .then(result => res.status(200).json({ success: true, error: false, data: result }))
         .catch(err => res.status(501).json({ success: false, error: true, data: err }));
 });
 
-
-router.post('/cities', (req, res) => {
-    CityModel.create({ newcity: req.body.newcity })
-        .then(result => res.status(200).json({ success: true, error: false, data: result }))
-        .catch(err => res.status(501).json({ success: false, error: true, data: err }));
-});
-
-
-router.put('/cities', (req, res) => {
-    CityModel.edit({ editcity: req.body.newcity, id:req.body.id   })
-        .then(result => res.status(200).json({ success: true, error: false, data: result }))
-        .catch(err => res.status(501).json({ success: false, error: true, data: err }));
-});
-
-router.delete('/cities', (req, res) => {
-    DeleteModel.delete({ query: req.query })
+router.post('/orders', (req, res) => {
+    console.log(req.body);
+    OrderModel.create({ body: req.body })
         .then(result => res.status(200).json({ success: true, error: false, data: result }))
         .catch(err => res.status(501).json({ success: false, error: true, data: err }));
 });
 
 
 
-module.exports = router
+
+router.put('/orders' , function(req, res) {
+    OrderModel.edit({ body: req.body })
+        .then(result => res.status(200).json({ success: true, error: false, data: result }))
+        .catch(err => res.status(501).json({ success: false, error: true, data: err }));
+});
+
+router.delete('/orders', (req, res) => {
+    OrderModel.deleteOrder({ req: req})
+        .then(result => res.status(200).json({ success: true, error: false, data: result }))
+        .catch(err => res.status(501).json({ success: false, error: true, data: err }));
+});
+
+
+
+module.exports = router;

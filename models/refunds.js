@@ -1,13 +1,13 @@
 const Sequelize = require('sequelize');
 const db = require('../settings/sequelize');
-const Op = Sequelize.Op;
 
-const Cities = db.define('cities', {
-    city: {
+const Refund = db.define('refund', {
+    paypal_id: {
         type: Sequelize.STRING
+    },
+    body: {
+        type: Sequelize.JSON
     }
 });
-module.exports = Cities;
 
-
-// module.exports = cities;
+module.exports = Refund;

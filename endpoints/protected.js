@@ -59,6 +59,7 @@ router.use(cors(config.CORS_OPTIONS));
 
 
 router.get('/checktoken', function (req, res) {
+    console.log('checkToken');
     res.status(200).json({success: true, error: false, data: "Token is valid"});
 });
 

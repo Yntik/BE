@@ -15,7 +15,7 @@ exports.setup = function(options, seedLink) {
 };
 
 exports.up = function (db) {
-    return db.createTable('product', {
+    return db.createTable('products', {
         columns: {
             id: { type: 'int', primaryKey: true, notNull: true, autoIncrement: true },
             size: {type: 'int', notNull: true},

@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var MasterModel = require('../models/masters');
+var MasterModel = require('../controllers/masters');
 var DeleteModel = require('../models/delete');
 
 
@@ -20,7 +20,7 @@ router.get('/masters', (req, res) => {
 });
 router.post('/masters', (req, res) => {
     MasterModel.create({ body: req.body})
-        .then(result => res.status(200).json({ success: true, error: false, data: result }))
+        .then(result => res.status(201).json({ success: true, error: false, data: result }))
         .catch(err => res.status(501).json({ success: false, error: true, data: err }));
 });
 
@@ -31,8 +31,8 @@ router.put('/masters', (req, res) => {
 });
 
 router.delete('/masters', (req, res) => {
-    DeleteModel.delete({ query: req.query })
-        .then(result => res.status(200).json({ success: true, error: false, data: result }))
+    MasterModel.delete({ query: req.query })
+        .then(result => res.status(204).json({ success: true, error: false, data: result }))
         .catch(err => res.status(501).json({ success: false, error: true, data: err }));
 });
 

@@ -1,15 +1,15 @@
 const config = require('./settings/config');
-var protected = require('./routes/protected');
+var protected = require('./endpoints/protected');
 var express = require('express');
 var cors = require('cors');
 var bodyParser = require('body-parser');
 
-const citys = require('./routes/cities');
-const price = require('./routes/product');
-const masters = require('./routes/masters');
-const orders = require('./routes/orders');
-const paypal = require('./routes/paypal');
-const logout = require('./routes/logout');
+const citys = require('./endpoints/cities');
+const price = require('./endpoints/product');
+const masters = require('./endpoints/masters');
+const orders = require('./endpoints/orders');
+const paypal = require('./endpoints/paypal');
+const logout = require('./endpoints/logout');
 
 var app = express();
 var port = process.env.PORT || config.BACK_END_PORT;

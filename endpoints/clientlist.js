@@ -1,7 +1,7 @@
-var express = require('express');
-var router = express.Router();
-var ClientModel = require('../models/clientlist');
-var DeleteModel = require('../models/delete')
+const express = require('express');
+const router = express.Router();
+const ClientModel = require('../controllers/clients');
+
 
 router.get('/clients', (req, res) => {
     ClientModel.get()
@@ -17,7 +17,7 @@ router.put('/clients', (req, res) => {
 });
 
 router.delete('/clients', (req, res) => {
-    DeleteModel.delete({ query: req.query })
+    ClientModel.delete({ query: req.query })
         .then(result => res.status(200).json({ success: true, error: false, data: result }))
         .catch(err => res.status(501).json({ success: false, error: true, data: err }));
 });

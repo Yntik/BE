@@ -2,7 +2,7 @@ const mypool = require('../../settings/MyPool');
 const mysql = require('mysql');
 const paypal_service = require('paypal-rest-sdk');
 const config = require('../../settings/paypal');
-
+const Paypal = require('../../models/paypal');
 
 paypal_service.configure(config.paypal_config);
 
@@ -10,25 +10,16 @@ paypal_service.configure(config.paypal_config);
 const createPaypal = {
 
 
-    createPaypal: async ({con}) => {
-        const sql = "INSERT INTO paypal () VALUES ();";
-        const result = await con.query(sql);
-        return result;
-
+    createPaypal: async ({t}) => {
+        return await Paypal.create({transaction: t});
     },
 
     get: async ({paypal_id}) => {
         console.log('paypal get init');
-        const con = await mypool.getCon();
-        console.log('then init in paypal get');
-        const sql = 'SELECT * FROM paypal\n'
-            + "WHERE id = " + mysql.escape(Number(paypal_id));
-        console.log(sql);
-        console.log('paypal_id', paypal_id);
-        const result = await con.query(sql);
-        con.release();
-        return result[0];
-
+        let result = await Paypal.findAll({
+            where: {id: Number(paypal_id)}
+        });
+        return result[0]
     },
 
     refund: async ({paypal_info}) => {
@@ -53,6 +44,11 @@ const createPaypal = {
         })
 
 
+    },
+
+    delete: async ({query, t}) => {
+        console.log('delete init');
+        return await Paypal.destroy({where: {id: Number(query.id)}, transaction: t})
     }
 
 };
