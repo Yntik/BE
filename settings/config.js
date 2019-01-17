@@ -11,7 +11,7 @@ var conf = convict({
         doc: 'The domen',
         format: 'url',
         default: {
-            origin: ['http://localhost:4200', 'http://localhost:3000', 'https://mighty-harbor-39325.herokuapp.com', 'https://pure-ocean-58040.herokuapp.com'],
+            origin: ['http://localhost:4200', 'http://localhost:3000', 'https://mighty-harbor-39325.herokuapp.com', 'http://clockware.s3-website.eu-central-1.amazonaws.com', 'https://pure-ocean-58040.herokuapp.com'],
             optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
         },
         env: "NODE_ENV"
