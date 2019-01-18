@@ -1,18 +1,17 @@
 const config = require('../settings/config');
 const auth0_Options = require('../settings/auth0');
-var express = require('express');
-var router = express.Router();
-var cors = require('cors');
-// var jwt = require('jsonwebtoken');
-var mysql = require('mysql');
+const express = require('express');
+const router = express.Router();
+const cors = require('cors');
+const mysql = require('mysql');
 
 const masters = require('./masters');
 const citys = require('./cities');
 const price = require('./product');
 const orders = require('./orders');
 const clients = require('./clientlist');
-var jwt = require('express-jwt');
-var jwks = require('jwks-rsa');
+const jwt = require('express-jwt');
+const jwks = require('jwks-rsa');
 
 var jwtCheck = jwt({
     secret: jwks.expressJwtSecret(auth0_Options.expressJwtSecret),

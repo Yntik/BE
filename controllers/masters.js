@@ -2,6 +2,7 @@ const Masters = require('../models/masters');
 const Orders = require('../models/orders');
 const Cities = require('../models/cities');
 const Sequelize = require('sequelize');
+const mysql = require('mysql');
 const Op = Sequelize.Op;
 const master = {
 
@@ -10,41 +11,12 @@ const master = {
         let start = new Date(String(query.datetime));
         let end = new Date(String(query.datetime));
         end.setHours(end.getHours() + Number(query.size));
-
         let result;
+        let subQuery;
         if (query.option === 'new') {
+            subQuery = "SELECT idmaster FROM orders WHERE start <= " + mysql.escape(start) + " AND " + mysql.escape(start) + " <= end" + "\n"
+                + "OR start <= " + mysql.escape(end) + " AND " + mysql.escape(end) + " <= end";
             console.log('free master for new order');
-            result = await Orders.findAll({
-                attributes: ['idmaster'],
-                where: {
-                    [Op.or]: [
-                        {
-                            [Op.and]: [
-                                {
-                                    start: {
-                                        [Op.lte]: start
-                                    },
-                                    end: {
-                                        [Op.gte]: start
-                                    }
-                                }]
-                        },
-                        {
-                            [Op.and]: [
-                                {
-                                    start: {
-                                        [Op.lte]: end
-                                    },
-                                    end: {
-                                        [Op.gte]: end
-                                    }
-                                }
-                            ]
-                        }
-                    ]
-                }
-            });
-            console.log('resssult', result);
             // sql = 'SELECT masters.id, masters.name, masters.surname, masters.idcity, masters.rating, cities.city\n'
             //     + "FROM masters\n"
             //     + "LEFT JOIN cities ON masters.idcity = cities.id\n"
@@ -54,47 +26,8 @@ const master = {
             //     + "OR start <= " + mysql.escape(end) + " AND " + mysql.escape(end) + " <= end )";
         }
         else {
-            result = await Orders.findAll({
-                attributes: ['idmaster'],
-                where: {
-                    [Op.and]: [
-                        {
-                            [Op.or]: [
-                                {
-                                    [Op.and]: [
-                                        {
-                                            start: {
-                                                [Op.lte]: start
-                                            },
-                                            end: {
-                                                [Op.gte]: start
-                                            }
-                                        }]
-                                },
-                                {
-                                    [Op.and]: [
-                                        {
-                                            start: {
-                                                [Op.lte]: end
-                                            },
-                                            end: {
-                                                [Op.gte]: end
-                                            }
-                                        }
-                                    ]
-                                }
-                            ]
-                        },
-                        {
-                            id: {
-                                [Op.ne]: Number(query.option)
-                            }
-                        }
-                    ]
-
-                }
-            });
-            console.log('resssult', result);
+            subQuery = "SELECT idmaster FROM orders WHERE (start <= " + mysql.escape(start) + " AND " + mysql.escape(start) + " <= end" + "\n"
+                + "OR start <= " + mysql.escape(end) + " AND " + mysql.escape(end) + " <= end) AND NOT orders.id = " + mysql.escape(Number(query.option));
             // sql = 'SELECT masters.id, masters.name, masters.surname, masters.idcity, masters.rating, cities.city\n '
             //     + "FROM masters\n"
             //     + "LEFT JOIN cities ON masters.idcity = cities.id\n"
@@ -102,10 +35,6 @@ const master = {
             //     + "AND masters.id NOT IN (" + "\n"
             //     + "SELECT idmaster FROM orders WHERE (start <= " + mysql.escape(start) + " AND " + mysql.escape(start) + " <= end" + "\n"
             //     + "OR start <= " + mysql.escape(end) + " AND " + mysql.escape(end) + " <= end) AND NOT orders.id = " + mysql.escape(Number(query.option)) + ")";
-        }
-        let ids_masters = [];
-        for (var key in result) {
-            ids_masters.push(result[key].idmaster)
         }
         result = await Masters.findAll({
             where: {
@@ -115,12 +44,11 @@ const master = {
                     },
                     {
                         id: {
-                            [Op.notIn]: ids_masters
+                            [Op.notIn]: [Sequelize.literal(subQuery)]
                         }
                     }
                 ]
             },
-            include: {model: Cities}
         });
         console.log('resultl2', result);
         return result;

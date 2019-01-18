@@ -137,7 +137,7 @@ const order = {
                     await refundModel.storeRefund({body: resolve.body, paypal_id: result.paypal_id, t: t});
                 }
                 console.log("delete paypal");
-                createPaypal.delete({query: {id: req.query.paypal_id}, t: t});
+                await createPaypal.delete({query: {id: req.query.paypal_id}, t: t});
                 console.log('do commit');
                 console.log('Transaction Complete.');
                 /* End transaction */
