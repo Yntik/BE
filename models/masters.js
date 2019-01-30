@@ -13,11 +13,11 @@ const Masters = db.define('masters', {
         type: Sequelize.INTEGER
     },
 
-    idcity: {
+    city_id: {
         type: Sequelize.INTEGER
     },
 });
 
-Masters.belongsTo(Cities, { foreignKey: 'idcity' });
+Masters.belongsTo(Cities, { foreignKey: 'city_id' });
 
 module.exports = Masters;

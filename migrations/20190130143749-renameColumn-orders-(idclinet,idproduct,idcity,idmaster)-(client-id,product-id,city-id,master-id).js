@@ -28,7 +28,7 @@ exports.down = async function (db) {
     await db.renameColumn('orders', 'client_id', 'idclient');
     await db.renameColumn('orders', 'master_id', 'idmaster');
     await db.renameColumn('orders', 'paypal_id', 'idpaypal');
-    return db.renameColumn('orders', 'producty_id', 'idproduct');
+    return db.renameColumn('orders', 'product_id', 'idproduct');
 };
 
 exports._meta = {

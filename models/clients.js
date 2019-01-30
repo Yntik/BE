@@ -12,11 +12,11 @@ const Clients = db.define('clients', {
         type: Sequelize.STRING
     },
 
-    idcity: {
+    city_id: {
         type: Sequelize.INTEGER
     },
 });
 
-Clients.belongsTo(Cities, { foreignKey: 'idcity' })
+Clients.belongsTo(Cities, { foreignKey: 'city_id' })
 module.exports = Clients;
 

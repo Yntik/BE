@@ -7,19 +7,19 @@ const Products = require('../models/product');
 const Clients = require('../models/clients');
 const Paypal = require('../models/paypal');
 const Orders = db.define('orders', {
-    idclient: {
+    client_id: {
         type: Sequelize.INTEGER
     },
     price: {
         type: Sequelize.STRING
     },
-    idproduct: {
+    product_id: {
         type: Sequelize.INTEGER
     },
-    idcity: {
+    city_id: {
         type: Sequelize.INTEGER
     },
-    idmaster: {
+    master_id: {
         type: Sequelize.INTEGER
     },
     start: {
@@ -27,12 +27,15 @@ const Orders = db.define('orders', {
     },
     end: {
         type: Sequelize.DATE
+    },
+    paypal_id: {
+        type: Sequelize.INTEGER
     }
 });
-Orders.belongsTo(Cities, {foreignKey: 'idcity'});
-Orders.belongsTo(Masters, {foreignKey: 'idmaster'});
-Orders.belongsTo(Clients, {foreignKey: 'idclient'});
-Orders.belongsTo(Products, {foreignKey: 'idproduct'});
-Orders.belongsTo(Paypal, {foreignKey: 'idpaypal'});
+Orders.belongsTo(Cities, {foreignKey: 'city_id'});
+Orders.belongsTo(Masters, {foreignKey: 'master_id'});
+Orders.belongsTo(Clients, {foreignKey: 'client_id'});
+Orders.belongsTo(Products, {foreignKey: 'product_id'});
+Orders.belongsTo(Paypal, {foreignKey: 'paypal_id'});
 
 module.exports = Orders;
