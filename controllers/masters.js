@@ -26,7 +26,7 @@ const master = {
             //     + "OR start <= " + mysql.escape(end) + " AND " + mysql.escape(end) + " <= end )";
         }
         else {
-            subQuery = "SELECT idmaster FROM orders WHERE (start <= " + mysql.escape(start) + " AND " + mysql.escape(start) + " <= end" + "\n"
+            subQuery = "SELECT master_id FROM orders WHERE (start <= " + mysql.escape(start) + " AND " + mysql.escape(start) + " <= end" + "\n"
                 + "OR start <= " + mysql.escape(end) + " AND " + mysql.escape(end) + " <= end) AND NOT orders.id = " + mysql.escape(Number(query.option));
             // sql = 'SELECT masters.id, masters.name, masters.surname, masters.idcity, masters.rating, cities.city\n '
             //     + "FROM masters\n"
