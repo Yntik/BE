@@ -154,7 +154,7 @@ async function updateclient({body, t}) {
     return await Clients.update({
         name: body.client,
         email: body.email,
-        idcity: Number(body.city)
+        city_id: Number(body.city)
     }, {where: {id: Number(body.idclient)}, transaction: t})
 };
 
@@ -163,11 +163,11 @@ async function updateorder({body, t}) {
     let start = new Date(body.datetime);
     let end = new Date(body.datetime);
     end.setHours(end.getHours() + Number(body.size));
-        return await Orders.update({
-        idclient: Number(body.idclient),
-        idcity: Number(body.city),
-        idmaster: Number(body.idmaster),
-        idproduct: Number(body.idproduct),
+    return await Orders.update({
+        client_id: Number(body.idclient),
+        city_id: Number(body.city),
+        master_id: Number(body.idmaster),
+        product_id: Number(body.idproduct),
         price: Number(body.price),
         start: start,
         end: end
@@ -181,7 +181,7 @@ async function checkmaster({body}) {
             name: body.master.name,
             surname: body.master.surname,
             rating: body.master.rating,
-            idcity: body.master.idcity,
+            city_id: body.master.idcity,
         }
     });
     if (result.length === 0) {
@@ -197,7 +197,7 @@ async function checkmasterisfree({body}) {
     end.setHours(end.getHours() + Number(body.size));
     let result = await Orders.findAll({
         where: {
-            idmaster: Number(body.master.id),
+            master_id: Number(body.master.id),
             [Op.and]:
                 {
                     [Op.or]: [
@@ -240,14 +240,14 @@ async function insertorder({body, product, client_id, paypal_id, t}) {
     end.setHours(end.getHours() + Number(product.size));
     return await Orders.create({
         price: String(product.price),
-        idproduct: Number(product.id),
-        idcity: Number(body.city),
-        idmaster: Number(body.master.id),
+        product_id: Number(product.id),
+        city_id: Number(body.city),
+        master_id: Number(body.master.id),
         start: start,
         end: end,
-        idpaypal: paypal_id,
-        idclient: client_id,
-    },{transaction: t});
+        paypal_id: paypal_id,
+        client_id: client_id,
+    }, {transaction: t});
 }
 
 
@@ -256,16 +256,19 @@ async function insertclient({body, t}) {
         where: {email: body.email},
         defaults: {
             name: body.client,
-            idcity: body.city
+            city_id: body.city
         },
         transaction: t
     });
     console.log('FindOrCreate', result);
-    if (result[1]){
+    if (result[1]) {
         return result[0];
     }
     else {
-        Clients.update({name: body.client, email: body.email, idcity: body.city}, {where: {email: body.email}, transaction: t});
+        Clients.update({name: body.client, email: body.email, city_id: body.city}, {
+            where: {email: body.email},
+            transaction: t
+        });
         return result[0];
     }
 };

@@ -22,17 +22,17 @@ const paypal = {
         console.log('get order');
         order = await OrderModel.get(Number(body.resource.custom));
         console.log('get price');
-        price = await productModel.get(order[0].idproduct);
+        price = await productModel.get(order[0].product_id);
         console.log(price, '===', body.resource.amount.total);
         if (Number(price.price) !== Number(body.resource.amount.total)) {
             throw new Error('Validation error');
         }
-        console.log('made query', order[0].idpaypal);
+        console.log('made query', order[0].paypal_id);
         let result = await Paypal.update({
             state_payment: 1,
             paypal_id: body.resource.id,
             webhook: JSON.stringify(body),
-        }, {where: {id: order[0].idpaypal}});
+        }, {where: {id: order[0].paypal_id}});
         console.log('paypal result', result);
         return ({result: result, order: order});
 

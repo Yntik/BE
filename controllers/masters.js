@@ -14,7 +14,7 @@ const master = {
         let result;
         let subQuery;
         if (query.option === 'new') {
-            subQuery = "SELECT idmaster FROM orders WHERE start <= " + mysql.escape(start) + " AND " + mysql.escape(start) + " <= end" + "\n"
+            subQuery = "SELECT master_id FROM orders WHERE start <= " + mysql.escape(start) + " AND " + mysql.escape(start) + " <= end" + "\n"
                 + "OR start <= " + mysql.escape(end) + " AND " + mysql.escape(end) + " <= end";
             console.log('free master for new order');
             // sql = 'SELECT masters.id, masters.name, masters.surname, masters.idcity, masters.rating, cities.city\n'
@@ -40,7 +40,7 @@ const master = {
             where: {
                 [Op.and]: [
                     {
-                        idcity: decodeURI(query.city)
+                        city_id: decodeURI(query.city)
                     },
                     {
                         id: {
@@ -65,7 +65,7 @@ const master = {
             name: body.name,
             surname: body.surname,
             rating: body.rating,
-            idcity: body.city
+            city_id: body.city
         }).save()
     },
 
@@ -74,7 +74,7 @@ const master = {
             name: body.name,
             surname: body.surname,
             rating: body.rating,
-            idcity: body.city
+            city_id: body.city
         }, {where: {id: body.id}})
     },
 

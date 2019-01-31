@@ -11,7 +11,7 @@ const clients = {
     },
 
     edit: async ({name, email, city, id}) => {
-        return await Clients.update({name: name, email: email, idcity: city}, {where: {id: id}})
+        return await Clients.update({name: name, email: email, city_id: city}, {where: {id: id}})
     },
 
     delete: async ({query}) => {
