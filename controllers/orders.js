@@ -181,7 +181,7 @@ async function checkmaster({body}) {
             name: body.master.name,
             surname: body.master.surname,
             rating: body.master.rating,
-            city_id: body.master.idcity,
+            city_id: body.master.city_id,
         }
     });
     if (result.length === 0) {
