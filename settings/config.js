@@ -1,11 +1,13 @@
 const OPTION = require('./MYSQL_OPTION');
 const convict = require('convict');
-var conf = convict({
+
+const conf = convict({
     env: {
         doc: "The applicaton environment.",
-        format: ["production", "development"],
-        default: "production",
-        env: "NODE_ENV"
+        format: ["production", "development", "test"],
+        default: process.env.env,
+        arg: 'nodeEnv',
+        env: process.env.NODE_ENV
     },
     CORS: {
         doc: 'The domen',
@@ -15,21 +17,53 @@ var conf = convict({
             optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
         },
         env: "NODE_ENV"
+    },
+    database: {
+        "dev": {
+            "host": "clockware.cggiayikq57u.eu-central-1.rds.amazonaws.com",
+            "user": "clockware",
+            "password": "passwordsecret",
+            "port": "3306",
+            "database": "clockware",
+            "driver": "mysql"
+        },
+        env: "NODE_ENV"
     }
 });
 
 if (conf.get('env') === 'production') {
     // в боевом окружении используем другой порт и сервер БД
+    console.log('prood');
+    console.log(conf.get('env'));
+    console.log(process.env.env);
     conf.load({
         CORS: {
             origin: ['http://localhost:4200', 'https://8b84052e.ngrok.io', 'https://7fcd2d87.ngrok.io', 'http://clockware.s3-website.eu-central-1.amazonaws.com', 'http://localhost:3000', 'https://mighty-harbor-39325.herokuapp.com']
         }
     });
 }
+else if (conf.get('env') === 'test') {
+    // в боевом окружении используем другой порт и сервер БД
+    console.log('testtt');
+    conf.load({
+        database: {
+            "dev": {
+                "host": "uoa25ublaow4obx5.cbetxkdyhwsb.us-east-1.rds.amazonaws.com",
+                "user": "kgdmym5x73zjg6ht",
+                "password": "b9eks97n4gxdky5x",
+                "port": "3306",
+                "database": "f5wf6itanzdumyuo",
+                "driver": "mysql"
+            }
+        }
+    });
+
+}
 const config = {
     BACK_END_PORT: 3000,
     CORS_OPTIONS: conf.get('CORS'),
     MYSQL_OPTION: OPTION.MYSQL_OPTION,
+    DATABASE: conf.get('database'),
     // Token life time
     JWT_EXPIRATION_TIME: 3600, // 1h
     // https://www.random.org/strings/?num=10&len=10&digits=on&upperalpha=on&loweralpha=on&unique=on&format=html&rnd=new

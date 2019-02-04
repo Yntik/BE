@@ -1,8 +1,8 @@
 const config = require('./settings/config');
-var protected = require('./endpoints/protected');
-var express = require('express');
-var cors = require('cors');
-var bodyParser = require('body-parser');
+const protected = require('./endpoints/protected');
+const express = require('express');
+const cors = require('cors');
+const bodyParser = require('body-parser');
 
 const citys = require('./endpoints/cities');
 const price = require('./endpoints/product');
@@ -12,8 +12,8 @@ const paypal = require('./endpoints/paypal');
 const logout = require('./endpoints/logout');
 const dev = require('./endpoints/dev');
 
-var app = express();
-var port = process.env.PORT || config.BACK_END_PORT;
+const app = express();
+const port = process.env.PORT || config.BACK_END_PORT;
 
 
 
@@ -43,4 +43,5 @@ app.post('/paypal/delete',paypal);
 
 app.listen(port, function() {
 	console.log('Example app listening on port ' + port + ' !');
+	console.log(config.DATABASE);
 });

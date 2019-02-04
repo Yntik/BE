@@ -6,9 +6,10 @@
   "scripts": {
     "start": "node app.js",
     "start:dev": "cross-env env=development node app.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "start:test": "cross-env env=test mocha -- spectator/testShema.spec.js",
     "ms_up": "node node_modules/db-migrate/bin/db-migrate up",
-    "ms_reset": "node node_modules/db-migrate/bin/db-migrate reset"
+    "ms_reset": "node node_modules/db-migrate/bin/db-migrate reset",
+    "test": "mocha -- spectator/*.spec.js"
   },
   "license": "ISC",
   "dependencies": {
@@ -41,6 +42,8 @@
     "mysql2": "^1.6.4"
   },
   "devDependencies": {
-    "cross-env": "^5.2.0"
+    "chai": "^4.2.0",
+    "cross-env": "^5.2.0",
+    "mocha": "^5.2.0"
   }
 }
