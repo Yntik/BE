@@ -8,10 +8,8 @@ const fs = require("fs");
 const cities = require('../controllers/cities');
 const masters = require('../controllers/masters');
 const products = require('../controllers/products');
+const orders = require('../controllers/orders');
 
-const modelMasters = require('../models/masters');
-const modelCities = require('../models/cities');
-const modelProducts = require('../models/product');
 
 const add_data = {
     init:  ()=> {
@@ -19,7 +17,8 @@ const add_data = {
             let tempDATA = {
                 cities: [],
                 masters: [],
-                products: []
+                products: [],
+                orders: []
             };
             let result;
             before(() => {
@@ -92,9 +91,36 @@ const add_data = {
                 tempDATA.products.push(result.dataValues);
                 await assert.deepEqual(result.dataValues, {id: tempDATA.products[1].id, size: 2, price: "20"});
             });
-            after(() => {
+            it('add order:', async (done) => {
+                let order = {
+                    client: "Андрей",
+                    email: "adrew@trata.com",
+                    city: tempDATA.cities[0].id,
+                    product: tempDATA.products[0].id,
+                    master: tempDATA.masters[0],
+                    datetime: "2019-02-17T23:00:00.000Z",
+                    size: tempDATA.products[0].size
+                };
+                done();
+                const result = await orders.create({body: {...order}});
+                tempDATA.orders.push(result.dataValues);
+                let end = new Date(order.datetime);
+                end.setHours(end.getHours() + Number(order.size));
+                await assert.deepEqual(result.dataValues, {
+                    id: result.dataValues.id,
+                    price: tempDATA.products[0].price,
+                    product_id: order.product,
+                    city_id: order.city,
+                    master_id: order.master.id,
+                    start: new Date(order.datetime),
+                    end: end,
+                    paypal_id: result.dataValues.paypal_id,
+                    client_id: result.dataValues.client_id
+                });
+            });
+            after(async () => {
                 fs.appendFileSync("./spectator/tempDATA.json", `${JSON.stringify(tempDATA)}`);
-            })
+            });
         });
     }
 };

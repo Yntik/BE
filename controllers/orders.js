@@ -37,6 +37,7 @@ const order = {
     },
 
     create: async ({body}) => {
+        console.log(body);
         try {
             if (body.client.length < 3) {
                 throw new Error('not validation');
@@ -57,10 +58,8 @@ const order = {
                 console.log('insertclient');
                 const result_client = await insertclient({body: body, t: t});
                 client_id = result_client.id;
-                console.log('resuult', result_client);
                 console.log('checkproduct');
                 product = await productModel.get(body.product);
-                console.log('result product', product);
                 console.log('createPaypal');
                 const result_paypal = await createPaypal.createPaypal({t: t});
                 paypal_id = result_paypal.id;
@@ -150,7 +149,6 @@ const order = {
 
 
 async function updateclient({body, t}) {
-    console.log('body..', body);
     return await Clients.update({
         name: body.client,
         email: body.email,
@@ -234,7 +232,6 @@ async function checkmasterisfree({body}) {
 
 
 async function insertorder({body, product, client_id, paypal_id, t}) {
-    console.log(typeof product, " product ", product);
     let start = new Date(body.datetime);
     let end = new Date(body.datetime);
     end.setHours(end.getHours() + Number(product.size));
@@ -260,7 +257,6 @@ async function insertclient({body, t}) {
         },
         transaction: t
     });
-    console.log('FindOrCreate', result);
     if (result[1]) {
         return result[0];
     }
