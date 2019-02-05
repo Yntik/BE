@@ -13,96 +13,92 @@ const modelMasters = require('../models/masters');
 const modelCities = require('../models/cities');
 const modelProducts = require('../models/product');
 
-describe('Add data', () => {
-    let tempDATA = {
-        cities: [],
-        masters: [],
-        products: []
-    };
-    let result;
-    before(async () => {
-        fs.truncateSync("./spectator/tempDATA.json");
+const add_data = {
+    init:  ()=> {
+        describe('Add data', () => {
+            let tempDATA = {
+                cities: [],
+                masters: [],
+                products: []
+            };
+            let result;
+            before(() => {
+                fs.truncateSync("./spectator/tempDATA.json");
+            });
+            it('add city, name : `Днепр`', async () => {
+                result = await cities.create({newcity: "Днепр"});
+                tempDATA.cities.push(result.dataValues);
+                await assert.deepEqual(result.dataValues, {id: tempDATA.cities[0].id,city: "Днепр"});
+            });
+            it('add city, name : `Ужгород`', async () => {
+                result = await cities.create({newcity: "Ужгород"});
+                tempDATA.cities.push(result.dataValues);
+                await assert.deepEqual(result.dataValues, {id: tempDATA.cities[1].id,city: "Ужгород"});
+            });
+            it('add master, name : `Женя`, surname: `Гришков`, rating: 5', async () => {
+                result = await masters.create({
+                    body: {
+                        name: "Женя",
+                        surname: "Гришков",
+                        rating: 5,
+                        city: tempDATA.cities[0].id
+                    }
+                });
+                tempDATA.masters.push(result.dataValues);
+                await assert.deepEqual(result.dataValues, {
+                    id: tempDATA.masters[0].id,
+                    name: "Женя",
+                    surname: "Гришков",
+                    rating: 5,
+                    city_id: tempDATA.cities[0].id
+                });
+            });
+            it('add master, name : `Петр`, surname: `Питрович`, rating: 2', async () => {
+                result = await masters.create({
+                    body: {
+                        name: "Петр",
+                        surname: "Питрович",
+                        rating: 2,
+                        city: tempDATA.cities[1].id
+                    }
+                });
+                tempDATA.masters.push(result.dataValues);
+                await assert.deepEqual(result.dataValues, {
+                    id: tempDATA.masters[1].id,
+                    name: "Петр",
+                    surname: "Питрович",
+                    rating: 2,
+                    city_id: tempDATA.cities[1].id
+                });
 
-    });
-    it('add city, name : `Днепр`', async () => {
-        result = await cities.create({newcity: "Днепр"});
-        tempDATA.cities.push(result.dataValues);
-        assert.deepEqual(result.dataValues, {id: tempDATA.cities[0].id,city: "Днепр"});
-    });
-    it('add city, name : `Ужгород`', async () => {
-        result = await cities.create({newcity: "Ужгород"});
-        tempDATA.cities.push(result.dataValues);
-        assert.deepEqual(result.dataValues, {id: tempDATA.cities[1].id,city: "Ужгород"});
-    });
-    it('add master, name : `Женя`, surname: `Гришков`, rating: 5', async () => {
-        result = await masters.create({
-            body: {
-                name: "Женя",
-                surname: "Гришков",
-                rating: 5,
-                city: tempDATA.cities[0].id
-            }
+            });
+            it('add product, price: `10`, size: 1', async () => {
+                result = await products.create({
+                    body: {
+                        size: 1,
+                        price: "10",
+                    }
+                });
+                tempDATA.products.push(result.dataValues);
+                await assert.deepEqual(result.dataValues, {id: tempDATA.products[0].id, size: 1, price: "10"});
+            });
+            it('add product, price: `20`, size: 2', async () => {
+                result = await products.create({
+                    body: {
+                        size: 2,
+                        price: "20",
+                    }
+                });
+                tempDATA.products.push(result.dataValues);
+                await assert.deepEqual(result.dataValues, {id: tempDATA.products[1].id, size: 2, price: "20"});
+            });
+            after(() => {
+                fs.appendFileSync("./spectator/tempDATA.json", `${JSON.stringify(tempDATA)}`);
+            })
         });
-        tempDATA.masters.push(result.dataValues);
-        assert.deepEqual(result.dataValues, {
-            id: tempDATA.masters[0].id,
-            name: "Женя",
-            surname: "Гришков",
-            rating: 5,
-            city_id: tempDATA.cities[0].id
-        });
-    });
-    it('add master, name : `Петр`, surname: `Питрович`, rating: 2', async () => {
-        result = await masters.create({
-            body: {
-                name: "Петр",
-                surname: "Питрович",
-                rating: 2,
-                city: tempDATA.cities[1].id
-            }
-        });
-        tempDATA.masters.push(result.dataValues);
-        assert.deepEqual(result.dataValues, {
-            id: tempDATA.masters[1].id,
-            name: "Петр",
-            surname: "Питрович",
-            rating: 2,
-            city_id: tempDATA.cities[1].id
-        });
+    }
+};
 
-    });
-    it('add product, price: `10`, size: 1', async () => {
-        result = await products.create({
-            body: {
-                size: 1,
-                price: "10",
-            }
-        });
-        tempDATA.products.push(result.dataValues);
-        assert.deepEqual(result.dataValues, {id: tempDATA.products[0].id, size: 1, price: "10"});
-    });
-    it('add product, price: `20`, size: 2', async () => {
-        result = await products.create({
-            body: {
-                size: 2,
-                price: "20",
-            }
-        });
-        tempDATA.products.push(result.dataValues);
-        assert.deepEqual(result.dataValues, {id: tempDATA.products[1].id, size: 2, price: "20"});
-    });
-    after(async () => {
-        fs.appendFileSync("./spectator/tempDATA.json", `${JSON.stringify(tempDATA)}`);
-        modelMasters.destroy({
-            where: {}
-        });
-        modelCities.destroy({
-            where: {},
-        });
-        modelProducts.destroy({
-            where: {}
-        });
-    })
-});
 
-module.exports = describe;
+
+module.exports = add_data;
