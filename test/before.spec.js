@@ -22,7 +22,7 @@ const add_data = {
             };
             let result;
             before(() => {
-                fs.truncateSync("./spectator/tempDATA.json");
+                fs.truncateSync("./test/tempDATA.json");
             });
             it('add city, name : `Днепр`', async () => {
                 result = await cities.create({newcity: "Днепр"});
@@ -119,7 +119,7 @@ const add_data = {
                 });
             });
             after(async () => {
-                fs.appendFileSync("./spectator/tempDATA.json", `${JSON.stringify(tempDATA)}`);
+                fs.appendFileSync("./test/tempDATA.json", `${JSON.stringify(tempDATA)}`);
             });
         });
     }

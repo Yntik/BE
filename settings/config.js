@@ -44,7 +44,6 @@ if (conf.get('env') === 'production') {
 }
 else if (conf.get('env') === 'test') {
     // в боевом окружении используем другой порт и сервер БД
-    console.log('testtt');
     conf.load({
         database: {
             "dev": {

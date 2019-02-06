@@ -4,8 +4,8 @@ const expect = chai.expect;    // Using Expect style
 const should = chai.should();  // Using Should style
 
 const add_data = require('./before.spec');
-const citiesTests = require('./cities.spec');
-const productsTests = require('./products.spec')
+const citiesTests = require('./01cities.spec');
+const productsTests = require('./products.spec');
 const delete_data = require('./after.spec');
 
 

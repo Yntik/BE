@@ -18,7 +18,7 @@ const delete_data = {
     remove: () => {
         describe('Delete all data', (done) => {
             it('Delete orders', async function () {
-                fs.truncateSync("./spectator/tempDATA.json");
+                fs.truncateSync("./test/tempDATA.json");
                 await modelOrders.destroy({
                     where: {}
                 });

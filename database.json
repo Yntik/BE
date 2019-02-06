@@ -1,10 +1,10 @@
 {
   "dev": {
-    "host": "clockware.cggiayikq57u.eu-central-1.rds.amazonaws.com",
-    "user": "clockware",
-    "password": "passwordsecret",
+    "host": "uoa25ublaow4obx5.cbetxkdyhwsb.us-east-1.rds.amazonaws.com",
+    "user": "kgdmym5x73zjg6ht",
+    "password": "b9eks97n4gxdky5x",
     "port": "3306",
-    "database": "clockware",
+    "database": "f5wf6itanzdumyuo",
     "driver": "mysql"
   }
 }

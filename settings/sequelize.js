@@ -8,6 +8,7 @@ module.exports =  new Sequelize(config.DATABASE.dev.database, config.DATABASE.de
         freezeTableName: true
     },
     operatorsAliases: false,
+    logging: false,
 
     pool: {
         max: 10,

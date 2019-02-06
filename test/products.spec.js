@@ -12,7 +12,7 @@ const productsTests = {
             let tempDATA = {};
             let product_id;
             it('should be equal price = `10`, size = `1`', async () => {
-                tempDATA = JSON.parse(fs.readFileSync('./spectator/tempDATA.json', 'utf8'));
+                tempDATA = JSON.parse(fs.readFileSync('./test/tempDATA.json', 'utf8'));
                 const result = await products.get(tempDATA.products[0].id);
                 assert.deepEqual(result.dataValues, tempDATA.products[0]);
             });
