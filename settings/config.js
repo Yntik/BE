@@ -47,11 +47,11 @@ else if (conf.get('env') === 'test') {
     conf.load({
         database: {
             "dev": {
-                "host": "uoa25ublaow4obx5.cbetxkdyhwsb.us-east-1.rds.amazonaws.com",
-                "user": "kgdmym5x73zjg6ht",
-                "password": "b9eks97n4gxdky5x",
+                "host": "127.0.0.1",
+                "user": "root",
+                "password": "ghjcnjrelax",
                 "port": "3306",
-                "database": "f5wf6itanzdumyuo",
+                "database": "sys",
                 "driver": "mysql"
             }
         }

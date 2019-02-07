@@ -27,7 +27,6 @@ const product = {
     },
 
     delete: async ({query}) => {
-        console.log('delete init');
         return await Products.destroy({where: {id: Number(query.id)}})
     }
 

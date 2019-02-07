@@ -15,7 +15,7 @@ const Orders = require('../models/orders');
 const order = {
 
     get: async (order_id) => {
-        console.log('get orders init');
+        // console.log('get orders init');
         if (order_id === undefined) {
             return await Orders.findAll({
                 include: [
@@ -37,7 +37,7 @@ const order = {
     },
 
     create: async ({body}) => {
-        console.log(body);
+        // console.log(body);
         try {
             if (body.client.length < 3) {
                 throw new Error('not validation');
@@ -47,23 +47,23 @@ const order = {
             }
             /* Begin transaction */
             return db.transaction(async (t) => {
-                console.log('Begin transaction ');
-                console.log('checkmaster');
+                // console.log('Begin transaction ');
+                // console.log('checkmaster');
                 await checkmaster({body: body});
-                console.log('checkmasterisfree');
+                // console.log('checkmasterisfree');
                 await checkmasterisfree({body: body});
                 let client_id;
                 let paypal_id;
                 let product;
-                console.log('insertclient');
+                // console.log('insertclient');
                 const result_client = await insertclient({body: body, t: t});
                 client_id = result_client.id;
-                console.log('checkproduct');
+                // console.log('checkproduct');
                 product = await productModel.get(body.product);
-                console.log('createPaypal');
+                // console.log('createPaypal');
                 const result_paypal = await createPaypal.createPaypal({t: t});
                 paypal_id = result_paypal.id;
-                console.log('insertorder', paypal_id);
+                // console.log('insertorder', paypal_id);
                 const result_order = await insertorder({
                     body: body,
                     product: product,
@@ -71,8 +71,8 @@ const order = {
                     paypal_id: paypal_id,
                     t: t
                 });
-                console.log('do commit');
-                console.log('Transaction Complete.');
+                // console.log('do commit');
+                // console.log('Transaction Complete.');
                 /* End transaction */
                 var transporter = nodemailer.createTransport({
                     service: 'Gmail',
@@ -81,7 +81,7 @@ const order = {
                         pass: 'passwordsecret'
                     }
                 });
-                console.log('created');
+                // console.log('created');
                 transporter.sendMail({
                     from: 'clockwiseclockware@gmail.com',
                     to: body.email,

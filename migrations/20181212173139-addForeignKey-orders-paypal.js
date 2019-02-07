@@ -16,7 +16,7 @@ exports.setup = function(options, seedLink) {
 
 exports.up = function (db)
 {
-    return db.addForeignKey('orders', 'paypal', 'idpaypal',
+    return db.addForeignKey('orders', 'paypal', 'paypal_id',
         {
             'idpaypal': 'id'
         },
@@ -28,7 +28,7 @@ exports.up = function (db)
 
 exports.down = function (db)
 {
-    return db.removeForeignKey('orders', 'idpaypal');
+    return db.removeForeignKey('orders', 'paypal_id');
 };
 
 exports._meta = {

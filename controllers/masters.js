@@ -79,7 +79,6 @@ const master = {
     },
 
     delete: async ({query}) => {
-        console.log('delete init');
         return await Masters.destroy({where: {id: Number(query.id)}})
     }
 

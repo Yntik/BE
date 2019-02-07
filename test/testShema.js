@@ -3,10 +3,10 @@ const assert = chai.assert;    // Using Assert style
 const expect = chai.expect;    // Using Expect style
 const should = chai.should();  // Using Should style
 
-const add_data = require('./before.spec');
+const add_data = require('./before');
 const citiesTests = require('./01cities.spec');
-const productsTests = require('./products.spec');
-const delete_data = require('./after.spec');
+const productsTests = require('./products');
+const delete_data = require('./after');
 
 
 describe('testing start',async () => {

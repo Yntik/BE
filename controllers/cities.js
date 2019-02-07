@@ -14,7 +14,6 @@ const cities = {
     },
 
     delete: async ({query}) => {
-        console.log('delete init');
         return await Cities.destroy({ where: { id: Number(query.id) }})
     }
 };

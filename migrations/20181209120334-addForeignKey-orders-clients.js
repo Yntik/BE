@@ -16,7 +16,7 @@ exports.setup = function(options, seedLink) {
 
 exports.up = function (db)
 {
-    return db.addForeignKey('orders', 'clients', 'idclient',
+    return db.addForeignKey('orders', 'clients', 'client_id',
         {
             'idclient': 'id'
         },
@@ -28,7 +28,7 @@ exports.up = function (db)
 
 exports.down = function (db)
 {
-    return db.removeForeignKey('orders', 'idclient');
+    return db.removeForeignKey('orders', 'client_id');
 };
 
 exports._meta = {
