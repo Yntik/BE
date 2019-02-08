@@ -46,26 +46,16 @@ const test = {
     },
 
     removeConstraint: async () => {
-        console.log('Remove Constraint');
-        console.log('1');
         await db.getQueryInterface().removeConstraint('orders', 'master_id');
-        console.log('2');
         await db.getQueryInterface().removeConstraint('orders', 'order_city');
-        console.log('3');
         await db.getQueryInterface().removeConstraint('orders', 'client_id');
-        console.log('4');
         await db.getQueryInterface().removeConstraint('orders', 'paypal_id');
-        console.log('5');
         await db.getQueryInterface().removeConstraint('orders', 'product_id');
-        console.log('6');
         await db.getQueryInterface().removeConstraint('clients', 'client_city');
-        console.log('7');
         await db.getQueryInterface().removeConstraint('masters', 'master_city');
     },
 
     addConstraint: async () => {
-        console.log('Add Constraint');
-        console.log('1');
         await db.getQueryInterface().addConstraint('orders', ['master_id'], {
             type: 'foreign key',
             name: 'master_id',
@@ -76,7 +66,6 @@ const test = {
             onDelete: 'NO ACTION',
             onUpdate: 'NO ACTION'
         });
-        console.log('2');
         await db.getQueryInterface().addConstraint('orders', ['city_id'], {
             type: 'foreign key',
             name: 'order_city',
@@ -87,7 +76,6 @@ const test = {
             onDelete: 'NO ACTION',
             onUpdate: 'NO ACTION'
         });
-        console.log('3');
         await db.getQueryInterface().addConstraint('orders', ['client_id'], {
             type: 'foreign key',
             name: 'client_id',
@@ -98,7 +86,6 @@ const test = {
             onDelete: 'NO ACTION',
             onUpdate: 'NO ACTION'
         });
-        console.log('4');
         await db.getQueryInterface().addConstraint('orders', ['paypal_id'], {
             type: 'foreign key',
             name: 'paypal_id',
@@ -109,7 +96,6 @@ const test = {
             onDelete: 'NO ACTION',
             onUpdate: 'NO ACTION'
         });
-        console.log('5');
         await db.getQueryInterface().addConstraint('orders', ['product_id'], {
             type: 'foreign key',
             name: 'product_id',
@@ -120,7 +106,6 @@ const test = {
             onDelete: 'NO ACTION',
             onUpdate: 'NO ACTION'
         });
-        console.log('6');
         await db.getQueryInterface().addConstraint('clients', ['city_id'], {
             type: 'foreign key',
             name: 'client_city',
@@ -131,7 +116,6 @@ const test = {
             onDelete: 'NO ACTION',
             onUpdate: 'NO ACTION'
         });
-        console.log('7');
         await db.getQueryInterface().addConstraint('masters', ['city_id'], {
             type: 'foreign key',
             name: 'master_city',

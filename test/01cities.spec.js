@@ -100,7 +100,7 @@ describe('CitiesController', async () => {
                 console.log(e);
             }
         });
-        it('should remove city', async () => {
+        it('should remove paypal store', async () => {
             try {
                 const result = await cities.delete({query: {id: 1}});
                 await result.should.be.a('number');

@@ -17,7 +17,7 @@ const mastersModel = require('../models/masters');
 const citiesModel = require('../models/cities');
 const ordersModel = require('../models/orders');
 const productModel = require('../models/product');
-
+const paypalModel = require('../models/paypal');
 
 describe('MastersController', async () => {
     before('Remove all constraint and clear all DB', async () => {
@@ -205,6 +205,14 @@ describe('MastersController', async () => {
                     truncate: true,
                 });
                 await productModel.destroy({
+                    where: {},
+                    truncate: true,
+                });
+                await paypalModel.destroy({
+                    where: {},
+                    truncate: true,
+                });
+                await citiesModel.destroy({
                     where: {},
                     truncate: true,
                 });

@@ -105,7 +105,7 @@ const order = {
                 await updateclient({body: body, t: t});
                 result = await updateorder({body: body, t: t});
                 /* End transaction */
-                console.log('Transaction Complete.');
+                // console.log('Transaction Complete.');
                 return result;
             });
         } catch (err) {
@@ -120,26 +120,27 @@ const order = {
     deleteOrder: async ({req}) => {
         try {
             return db.transaction(async (t) => {
-                console.log("transaction start");
-                console.log('delete init');
-                await Orders.destroy({where: {id: Number(req.query.id)}, transaction: t});
-                console.log("delete order");
-                console.log("get paypal");
-                console.log(req.query.paypal_id);
-                const result = await createPaypal.get({paypal_id: Number(req.query.paypal_id)});
-                console.log(result);
-                if (result.state_payment !== 0) {
+                // console.log("transaction start");
+                // console.log('delete init');
+                const result_order = await Orders.destroy({where: {id: Number(req.query.id)}, transaction: t});
+                // console.log("delete order");
+                // console.log("get paypal");
+                // console.log(req.query.paypal_id);
+                const result_paypal = await createPaypal.get({paypal_id: Number(req.query.paypal_id)});
+                // console.log(result);
+                if (result_paypal.state_payment !== 0) {
                     //refund
-                    console.log("do refund");
-                    const resolve = await createPaypal.refund({paypal_info: result});
-                    console.log("store refund");
-                    await refundModel.storeRefund({body: resolve.body, paypal_id: result.paypal_id, t: t});
+                    // console.log("do refund");
+                    const resolve = await createPaypal.refund({paypal_info: result_paypal});
+                    // console.log("store refund");
+                    await refundModel.storeRefund({body: resolve.body, paypal_id: result_paypal.paypal_id, t: t});
                 }
-                console.log("delete paypal");
+                // console.log("delete paypal");
                 await createPaypal.delete({query: {id: req.query.paypal_id}, t: t});
-                console.log('do commit');
-                console.log('Transaction Complete.');
+                // console.log('do commit');
+                // console.log('Transaction Complete.');
                 /* End transaction */
+                return result_order;
             });
         } catch (err) {
             throw new Error(err);
