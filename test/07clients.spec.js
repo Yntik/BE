@@ -30,256 +30,225 @@ describe('ClientController', async () => {
     });
     describe('Get client function', async () => {
         beforeEach(async () => {
-            try {
-                await ordersModel.destroy({
-                    where: {},
-                    truncate: true,
-                });
-                await mastersModel.destroy({
-                    where: {},
-                    truncate: true,
-                });
-                await citiesModel.destroy({
-                    where: {},
-                    truncate: true,
-                });
-                await productModel.destroy({
-                    where: {},
-                    truncate: true,
-                });
-                await paypalModel.destroy({
-                    where: {},
-                    truncate: true,
-                });
-                await citiesModel.destroy({
-                    where: {},
-                    truncate: true,
-                });
-                await clientsModel.destroy({
-                    where: {},
-                    truncate: true,
-                });
-                await cities.create({newcity: 'Днепр'});
-                await products.create({
-                    body: {
-                        size: 1,
-                        price: '10'
-                    }
-                });
-                await masters.create({
-                    body:
-                        {
-                            name: 'Гриша',
-                            surname: 'Петров',
-                            rating: 3,
-                            city: 1
-                        }
-                });
-                let order = {
-                    client: "Андрей",
-                    email: 'adrew@trata.com',
-                    city: 1,
-                    product: 1,
-                    master: {
-                        id: 1,
+            await ordersModel.destroy({
+                where: {},
+                truncate: true,
+            });
+            await mastersModel.destroy({
+                where: {},
+                truncate: true,
+            });
+            await citiesModel.destroy({
+                where: {},
+                truncate: true,
+            });
+            await productModel.destroy({
+                where: {},
+                truncate: true,
+            });
+            await paypalModel.destroy({
+                where: {},
+                truncate: true,
+            });
+            await citiesModel.destroy({
+                where: {},
+                truncate: true,
+            });
+            await clientsModel.destroy({
+                where: {},
+                truncate: true,
+            });
+            await cities.create({newcity: 'Днепр'});
+            await products.create({
+                body: {
+                    size: 1,
+                    price: '10'
+                }
+            });
+            await masters.create({
+                body:
+                    {
                         name: 'Гриша',
                         surname: 'Петров',
                         rating: 3,
-                        city_id: 1
-                    },
-                    datetime: '2019-02-17T23:00:00.000Z',
-                    size: 1
-                };
-                await orders.create({body: {...order}});
-
-            } catch (e) {
-                console.log(e);
-            }
+                        city: 1
+                    }
+            });
+            let order = {
+                client: "Андрей",
+                email: 'adrew@trata.com',
+                city: 1,
+                product: 1,
+                master: {
+                    id: 1,
+                    name: 'Гриша',
+                    surname: 'Петров',
+                    rating: 3,
+                    city_id: 1
+                },
+                datetime: '2019-02-17T23:00:00.000Z',
+                size: 1
+            };
+            await orders.create({body: {...order}});
         });
         it('should show client', async () => {
-            try {
-                const result = await clients.get();
-                await result[0].dataValues.id.should.be.eql(1);
-                await result[0].dataValues.city_id.should.be.eql(1);
-                await result[0].dataValues.name.should.be.eql('Андрей');
-
-            } catch (e) {
-                console.log(e);
-            }
-
+            const result = await clients.get();
+            await result[0].dataValues.id.should.be.eql(1);
+            await result[0].dataValues.city_id.should.be.eql(1);
+            await result[0].dataValues.name.should.be.eql('Андрей');
         });
     });
     describe('Edit client function', async () => {
         beforeEach(async () => {
-            try {
-                await ordersModel.destroy({
-                    where: {},
-                    truncate: true,
-                });
-                await mastersModel.destroy({
-                    where: {},
-                    truncate: true,
-                });
-                await citiesModel.destroy({
-                    where: {},
-                    truncate: true,
-                });
-                await productModel.destroy({
-                    where: {},
-                    truncate: true,
-                });
-                await paypalModel.destroy({
-                    where: {},
-                    truncate: true,
-                });
-                await citiesModel.destroy({
-                    where: {},
-                    truncate: true,
-                });
-                await clientsModel.destroy({
-                    where: {},
-                    truncate: true,
-                });
-                await cities.create({newcity: 'Днепр'});
-                await products.create({
-                    body: {
-                        size: 1,
-                        price: '10'
-                    }
-                });
-                await masters.create({
-                    body:
-                        {
-                            name: 'Гриша',
-                            surname: 'Петров',
-                            rating: 3,
-                            city: 1
-                        }
-                });
-                let order = {
-                    client: "Андрей",
-                    email: 'adrew@trata.com',
-                    city: 1,
-                    product: 1,
-                    master: {
-                        id: 1,
+            await ordersModel.destroy({
+                where: {},
+                truncate: true,
+            });
+            await mastersModel.destroy({
+                where: {},
+                truncate: true,
+            });
+            await citiesModel.destroy({
+                where: {},
+                truncate: true,
+            });
+            await productModel.destroy({
+                where: {},
+                truncate: true,
+            });
+            await paypalModel.destroy({
+                where: {},
+                truncate: true,
+            });
+            await citiesModel.destroy({
+                where: {},
+                truncate: true,
+            });
+            await clientsModel.destroy({
+                where: {},
+                truncate: true,
+            });
+            await cities.create({newcity: 'Днепр'});
+            await products.create({
+                body: {
+                    size: 1,
+                    price: '10'
+                }
+            });
+            await masters.create({
+                body:
+                    {
                         name: 'Гриша',
                         surname: 'Петров',
                         rating: 3,
-                        city_id: 1
-                    },
-                    datetime: '2019-02-17T23:00:00.000Z',
-                    size: 1
-                };
-                await orders.create({body: {...order}});
-
-            } catch (e) {
-                console.log(e);
-            }
+                        city: 1
+                    }
+            });
+            let order = {
+                client: "Андрей",
+                email: 'adrew@trata.com',
+                city: 1,
+                product: 1,
+                master: {
+                    id: 1,
+                    name: 'Гриша',
+                    surname: 'Петров',
+                    rating: 3,
+                    city_id: 1
+                },
+                datetime: '2019-02-17T23:00:00.000Z',
+                size: 1
+            };
+            await orders.create({body: {...order}});
         });
         it('should edit client', async () => {
-            try {
-                const result = await clients.edit({name: 'Богдан', email: 'newemail@gdad.com', city: 1, id: 1});
-                await result.should.be.a('array');
-                await result.length.should.be.eql(1);
-                await result[0].should.be.eql(1);
-
-            } catch (e) {
-                console.log(e);
-            }
-
+            const result = await clients.edit({name: 'Богдан', email: 'newemail@gdad.com', city: 1, id: 1});
+            await result.should.be.a('array');
+            await result.length.should.be.eql(1);
+            await result[0].should.be.eql(1);
         });
     });
     describe('Remove client function', async () => {
         beforeEach(async () => {
-            try {
-                await ordersModel.destroy({
-                    where: {},
-                    truncate: true,
-                });
-                await mastersModel.destroy({
-                    where: {},
-                    truncate: true,
-                });
-                await citiesModel.destroy({
-                    where: {},
-                    truncate: true,
-                });
-                await productModel.destroy({
-                    where: {},
-                    truncate: true,
-                });
-                await paypalModel.destroy({
-                    where: {},
-                    truncate: true,
-                });
-                await citiesModel.destroy({
-                    where: {},
-                    truncate: true,
-                });
-                await clientsModel.destroy({
-                    where: {},
-                    truncate: true,
-                });
-                await cities.create({newcity: 'Днепр'});
-                await products.create({
-                    body: {
-                        size: 1,
-                        price: '10'
-                    }
-                });
-                await masters.create({
-                    body:
-                        {
-                            name: 'Гриша',
-                            surname: 'Петров',
-                            rating: 3,
-                            city: 1
-                        }
-                });
-                let order = {
-                    client: "Андрей",
-                    email: 'adrew@trata.com',
-                    city: 1,
-                    product: 1,
-                    master: {
-                        id: 1,
+            await ordersModel.destroy({
+                where: {},
+                truncate: true,
+            });
+            await mastersModel.destroy({
+                where: {},
+                truncate: true,
+            });
+            await citiesModel.destroy({
+                where: {},
+                truncate: true,
+            });
+            await productModel.destroy({
+                where: {},
+                truncate: true,
+            });
+            await paypalModel.destroy({
+                where: {},
+                truncate: true,
+            });
+            await citiesModel.destroy({
+                where: {},
+                truncate: true,
+            });
+            await clientsModel.destroy({
+                where: {},
+                truncate: true,
+            });
+            await cities.create({newcity: 'Днепр'});
+            await products.create({
+                body: {
+                    size: 1,
+                    price: '10'
+                }
+            });
+            await masters.create({
+                body:
+                    {
                         name: 'Гриша',
                         surname: 'Петров',
                         rating: 3,
-                        city_id: 1
-                    },
-                    datetime: '2019-02-17T23:00:00.000Z',
-                    size: 1
-                };
-                await orders.create({body: {...order}});
-            } catch (e) {
-                console.log(e);
-            }
+                        city: 1
+                    }
+            });
+            let order = {
+                client: "Андрей",
+                email: 'adrew@trata.com',
+                city: 1,
+                product: 1,
+                master: {
+                    id: 1,
+                    name: 'Гриша',
+                    surname: 'Петров',
+                    rating: 3,
+                    city_id: 1
+                },
+                datetime: '2019-02-17T23:00:00.000Z',
+                size: 1
+            };
+            await orders.create({body: {...order}});
         });
 
         it('should remove client', async () => {
-            try {
-                await orders.deleteOrder({
-                    req: {
-                        query: {
-                            id: 1,
-                            paypal_id: 1,
-
-                        }
-                    }
-                });
-                const result = await clients.delete({
+            await orders.deleteOrder({
+                req: {
                     query: {
                         id: 1,
-                    }
-                });
-                await result.should.be.a('number');
-                await result.should.be.eql(1);
-            } catch (e) {
-                console.log(e);
-            }
+                        paypal_id: 1,
 
+                    }
+                }
+            });
+            const result = await clients.delete({
+                query: {
+                    id: 1,
+                }
+            });
+            await result.should.be.a('number');
+            await result.should.be.eql(1);
         });
     });
 });

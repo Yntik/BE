@@ -16,41 +16,31 @@ describe('WebhookController', async () => {
     });
     after('Add all constraint', async () => {
         await test.addConstraint()
-    })
+    });
     describe('Store webhook function', async () => {
         beforeEach(async () => {
-            try {
-                await webhookModel.destroy({
-                    where: {},
-                    truncate: true,
-                });
-            } catch (e) {
-                console.log(e);
-            }
+            await webhookModel.destroy({
+                where: {},
+                truncate: true,
+            });
         });
         it('should store webhook', async () => {
-            try {
-                let body = {
-                    about: 'store webhook',
-                    json: 'true'
-                };
-                let order = {
-                    id: 1
-                };
-                let state_verify = 1;
-                let paypal_id = 'paypal_id hash';
-                const result = await webhooks.storeWebhook(body, order, state_verify, paypal_id);
-                await result.dataValues.should.be.a('object');
-                await result.dataValues.id.should.be.eql(1);
-                await result.dataValues.body.should.be.eql(JSON.stringify(body));
-                await result.dataValues.state_verify.should.be.eql(1);
-                await result.dataValues.paypal_id.should.be.a('string');
-                await result.dataValues.paypal_id.should.be.eql(paypal_id);
-
-            } catch (e) {
-                console.log(e);
-            }
-
+            let body = {
+                about: 'store webhook',
+                json: 'true'
+            };
+            let order = {
+                id: 1
+            };
+            let state_verify = 1;
+            let paypal_id = 'paypal_id hash';
+            const result = await webhooks.storeWebhook(body, order, state_verify, paypal_id);
+            await result.dataValues.should.be.a('object');
+            await result.dataValues.id.should.be.eql(1);
+            await result.dataValues.body.should.be.eql(JSON.stringify(body));
+            await result.dataValues.state_verify.should.be.eql(1);
+            await result.dataValues.paypal_id.should.be.a('string');
+            await result.dataValues.paypal_id.should.be.eql(paypal_id);
         });
     });
     describe('Get webhook function', async () => {
@@ -64,29 +54,20 @@ describe('WebhookController', async () => {
         let state_verify = 1;
         let paypal_id = 'paypal_id_hash';
         beforeEach(async () => {
-            try {
-                await webhookModel.destroy({
-                    where: {},
-                    truncate: true,
-                });
-                await webhooks.storeWebhook(body, order, state_verify, paypal_id);
-            } catch (e) {
-                console.log(e);
-            }
+            await webhookModel.destroy({
+                where: {},
+                truncate: true,
+            });
+            await webhooks.storeWebhook(body, order, state_verify, paypal_id);
         });
         it(`should get webhook by paypal_id = ${paypal_id}`, async () => {
-            try {
-                const result = await webhooks.get({paypal_id: paypal_id});
-                await result.dataValues.should.be.a('object');
-                await result.dataValues.id.should.be.eql(1);
-                await result.dataValues.body.should.be.eql(JSON.stringify(body));
-                await result.dataValues.state_verify.should.be.eql(1);
-                await result.dataValues.paypal_id.should.be.a('string');
-                await result.dataValues.paypal_id.should.be.eql(paypal_id);
-
-            } catch (e) {
-                console.log(e);
-            }
+            const result = await webhooks.get({paypal_id: paypal_id});
+            await result.dataValues.should.be.a('object');
+            await result.dataValues.id.should.be.eql(1);
+            await result.dataValues.body.should.be.eql(JSON.stringify(body));
+            await result.dataValues.state_verify.should.be.eql(1);
+            await result.dataValues.paypal_id.should.be.a('string');
+            await result.dataValues.paypal_id.should.be.eql(paypal_id);
 
         });
     });

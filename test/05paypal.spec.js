@@ -30,7 +30,6 @@ describe('PaypalController', async () => {
     });
     describe('Edit status of payment', async () => {
         beforeEach(async () => {
-            try {
                 await ordersModel.destroy({
                     where: {},
                     truncate: true,
@@ -88,12 +87,8 @@ describe('PaypalController', async () => {
                     size: 1
                 };
                 await orders.create({body: {...order}});
-            } catch (e) {
-                console.log(e);
-            }
         });
         it('should change status payment of order', async () => {
-            try {
                 let body = {
                     resource: {
                         state: 'completed',
@@ -125,10 +120,6 @@ describe('PaypalController', async () => {
                 await result.order[0].dataValues.paypal_id.should.be.eql(1);
                 await result.order[0].dataValues.start.should.be.eql(start);
                 await result.order[0].dataValues.end.should.be.eql(end);
-            } catch (e) {
-                console.log(e);
-            }
-
         });
     });
 });
