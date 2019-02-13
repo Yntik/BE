@@ -1,10 +1,10 @@
 {
   "dev": {
-    "host": "127.0.0.1",
-    "user": "root",
-    "password": "ghjcnjrelax",
+    "host": "clockware.cggiayikq57u.eu-central-1.rds.amazonaws.com",
+    "user": "clockware",
+    "password": "passwordsecret",
     "port": "3306",
-    "database": "sys",
+    "database": "clockware",
     "driver": "mysql"
   }
 }
