@@ -15,7 +15,7 @@ const dev = require('./endpoints/dev');
 const app = express();
 const port = process.env.PORT || config.BACK_END_PORT;
 
-//edition for jenkins
+
 
 app.use(bodyParser.json());
 app.use(cors(config.CORS_OPTIONS));
