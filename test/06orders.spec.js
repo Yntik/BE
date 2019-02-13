@@ -187,6 +187,26 @@ describe('OrdersController', async () => {
             await result.dataValues.start.should.be.eql(start);
             await result.dataValues.end.should.be.eql(end);
         });
+        it('don\'t create order', async () => {
+            let order = {
+                client: "Андрей",
+                email: 'adrew@trata.com',
+                city: 1,
+                product: 5,
+                master: {
+                    id: 1,
+                    name: 'Гриша',
+                    surname: 'Петров',
+                    rating: 3,
+                    city_id: 1
+                },
+                datetime: '2019-02-17T23:00:00.000Z',
+                size: 1
+            };
+
+            // expect(order.create.bind(order, {body: {...order}})).to.throw(new Error('Cannot read property size of undefined'));
+            expect(() => order.create({body: {...order}}).to.throw('Cannot read property size of undefined'));
+        });
     });
     describe('Edit order function', async () => {
         beforeEach(async () => {
@@ -327,7 +347,7 @@ describe('OrdersController', async () => {
                     }
             });
             let order = {
-                client: "Андрей",
+                client: "Гришка",
                 email: 'adrew@trata.com',
                 city: 1,
                 product: 1,
@@ -349,12 +369,31 @@ describe('OrdersController', async () => {
                     query: {
                         id: 1,
                         paypal_id: 1,
-
                     }
                 }
             });
             await result.should.be.a('number');
             await result.should.be.eql(1);
+        });
+        it('don\'t create order', async () => {
+            let order = {
+                client: "Женьок",
+                email: 'adrew@trata.com',
+                city: 1,
+                product: 5,
+                master: {
+                    id: 1,
+                    name: 'Гриша',
+                    surname: 'Петров',
+                    rating: 3,
+                    city_id: 1
+                },
+                datetime: '2019-02-17T23:00:00.000Z',
+                size: 1
+            };
+
+            // expect(order.create.bind(order, {body: {...order}})).to.throw(new Error('Cannot read property size of undefined'));
+            expect(() => order.create({body: {...order}}).to.throw('Cannot read property size of undefined'));
         });
     });
 });

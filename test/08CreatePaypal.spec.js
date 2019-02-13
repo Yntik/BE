@@ -51,14 +51,9 @@ describe('CreatePaypalController', async () => {
 
 
         });
-        // it('don\'t should show create paypal', async () => {
-        //     const result = await createPaypal.get();
-        //     await result.dataValues.should.be.a('object');
-        //     await result.dataValues.id.should.be.eql(1);
-        //     await result.dataValues.paypal_id.should.be.eql('1');
-        //     await result.dataValues.state_payment.should.be.eql(0);
-        //     await result.dataValues.webhook.should.be.eql(true);
-        // });
+        it('don\'t should show create paypal', async () => {
+            expect(async () => await createPaypal.get({}).to.throw('SequelizeDatabaseError: Unknown column NaN in where clause'));
+        });
     });
     describe('Remove paypal function', async () => {
         beforeEach(async () => {
