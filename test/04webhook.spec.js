@@ -11,11 +11,11 @@ const webhookModel = require('../models/webhooks');
 
 describe('WebhookController', async () => {
     before('Remove all constraint', async () => {
-        await test.removeConstraint();
+        // await test.removeConstraint();
         await test.destroy();
     });
     after('Add all constraint', async () => {
-        await test.addConstraint()
+        // await test.addConstraint()
     });
     describe('Store webhook function', async () => {
         beforeEach(async () => {

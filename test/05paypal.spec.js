@@ -22,11 +22,11 @@ const productsModel = require('../models/product');
 
 describe('PaypalController', async () => {
     before('Remove all constraint', async () => {
-        await test.removeConstraint();
+        // await test.removeConstraint();
         await test.destroy();
     });
     after('Add all constraint', async () => {
-        await test.addConstraint()
+        // await test.addConstraint()
     });
     describe('Edit status of payment', async () => {
         beforeEach(async () => {

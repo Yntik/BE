@@ -12,11 +12,11 @@ const paypalModel = require('../models/paypal');
 
 describe('CreatePaypalController', async () => {
     before('Remove all constraint', async () => {
-        await test.removeConstraint();
+        // await test.removeConstraint();
         await test.destroy();
     });
     after('Add all constraint', async () => {
-        await test.addConstraint()
+        // await test.addConstraint()
     });
     describe('Create paypal function', async () => {
         beforeEach(async () => {

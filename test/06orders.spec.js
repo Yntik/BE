@@ -21,11 +21,11 @@ const productModel = require('../models/product');
 
 describe('OrdersController', async () => {
     before('Remove all constraint', async () => {
-        await test.removeConstraint();
+        // await test.removeConstraint();
         await test.destroy();
     });
     after('Add all constraint', async () => {
-        await test.addConstraint()
+        // await test.addConstraint()
     });
     describe('Get order function', async () => {
         beforeEach(async () => {

@@ -21,11 +21,11 @@ const paypalModel = require('../models/paypal');
 
 describe('MastersController', async () => {
     before('Remove all constraint and clear all DB', async () => {
-        await test.removeConstraint();
+        // await test.removeConstraint();
         await test.destroy();
     });
     after('Add all constraint', async () => {
-        await test.addConstraint()
+        // await test.addConstraint()
     });
     describe('Get masters function', async () => {
         beforeEach(async () => {
