@@ -12,6 +12,10 @@ const Products = require('../models/product');
 const Clients = require('../models/clients');
 const Paypal = require('../models/paypal');
 const Orders = require('../models/orders');
+
+
+
+
 const order = {
 
     get: async (order_id) => {
@@ -74,16 +78,20 @@ const order = {
                 // console.log('do commit');
                 // console.log('Transaction Complete.');
                 /* End transaction */
-                var transporter = nodemailer.createTransport({
-                    service: 'Gmail',
+                // await SES.verifyEmailAddress({EmailAddress: body.email}).promise();
+                const transporter = nodemailer.createTransport({
+                    service: 'gmail',
+                    host: 'smtp.gmail.com',
+                    port: 465,
+                    secure: true,
                     auth: {
-                        user: 'clockwiseclockware@gmail.com',
-                        pass: 'passwordsecret'
-                    }
+                        user: 'clockwaremail@gmail.com',
+                        pass: 'ghjcnj1020',
+                    },
                 });
-                // console.log('created');
+                // // console.log('created');
                 transporter.sendMail({
-                    from: 'clockwiseclockware@gmail.com',
+                    from: 'clockwaremail@gmail.com',
                     to: body.email,
                     subject: 'Заказ принят!',
                     text: 'Ваш заказ поступил в обработку!'

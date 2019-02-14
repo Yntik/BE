@@ -65,6 +65,11 @@ const config = {
     DATABASE: conf.get('database'),
     // Token life time
     JWT_EXPIRATION_TIME: 3600, // 1h
+    AWS_SDK: {
+        accessKeyId: "AKIAJBYY5XVK3LBO455Q",
+        secretAccessKey: "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",
+        region: "us-east-1"
+    },
     // https://www.random.org/strings/?num=10&len=10&digits=on&upperalpha=on&loweralpha=on&unique=on&format=html&rnd=new
     // ->
     // vIh2YQonCj
