@@ -38,7 +38,7 @@ describe('WebhookController', async () => {
             await result.dataValues.should.be.a('object');
             await result.dataValues.id.should.be.eql(1);
             await result.dataValues.body.should.be.eql(JSON.stringify(body));
-            await result.dataValues.state_verify.should.be.eql(1);
+            await result.dataValues.state_verify.should.be.eql(0);
             await result.dataValues.paypal_id.should.be.a('string');
             await result.dataValues.paypal_id.should.be.eql(paypal_id);
         });

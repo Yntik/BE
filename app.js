@@ -25,11 +25,10 @@ app.use(bodyParser.urlencoded({
 
 
 
-
+//for testing all systems on ec2
 
 
 app.use('/protected', protected);
-// app.post('/login', protected.authenticate);
 app.post('/logout',logout);
 app.get('/dev',dev);
 app.get('/cities',citys);
