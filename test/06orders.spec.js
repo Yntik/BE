@@ -75,7 +75,7 @@ describe('OrdersController', async () => {
             });
             let order = {
                 client: "Андрей",
-                email: 'adrew@trata.com',
+                email: 'eifaurya@gmail.com',
                 city: 1,
                 product: 1,
                 master: {
@@ -158,7 +158,7 @@ describe('OrdersController', async () => {
         it('should create order', async () => {
             let order = {
                 client: "Андрей",
-                email: 'adrew@trata.com',
+                email: 'eifaurya@gmail.com',
                 city: 1,
                 product: 1,
                 master: {
@@ -190,7 +190,7 @@ describe('OrdersController', async () => {
         it('don\'t create order', async () => {
             let order = {
                 client: "Андрей",
-                email: 'adrew@trata.com',
+                email: 'eifaurya@gmail.com',
                 city: 1,
                 product: 5,
                 master: {
@@ -265,7 +265,7 @@ describe('OrdersController', async () => {
             });
             let order = {
                 client: "Андрей",
-                email: 'adrew@trata.com',
+                email: 'eifaurya@gmail.com',
                 city: 1,
                 product: 1,
                 master: {
@@ -286,7 +286,7 @@ describe('OrdersController', async () => {
                     id: 1,
                     client: "Серега",
                     idclient: 1,
-                    email: 'adrew@trata.com',
+                    email: 'eifaurya@gmail.com',
                     city: 1,
                     idproduct: 1,
                     idmaster: 2,
@@ -348,7 +348,7 @@ describe('OrdersController', async () => {
             });
             let order = {
                 client: "Гришка",
-                email: 'adrew@trata.com',
+                email: 'eifaurya@gmail.com',
                 city: 1,
                 product: 1,
                 master: {
@@ -378,7 +378,7 @@ describe('OrdersController', async () => {
         it('don\'t create order', async () => {
             let order = {
                 client: "Женьок",
-                email: 'adrew@trata.com',
+                email: 'eifaurya@gmail.com',
                 city: 1,
                 product: 5,
                 master: {

@@ -197,7 +197,7 @@ describe('MastersController', async () => {
             });
             let order = {
                 client: "Андрей",
-                email: 'adrew@trata.com',
+                email: 'eifaurya@gmail.com',
                 city: 1,
                 product: 1,
                 master: {
