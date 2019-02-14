@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node app.js",
     "start:dev": "cross-env env=development node app.js",
-    "test": "cross-env env=test mocha test/02masters.spec.js --timeout 15000 --exit",
+    "test": "cross-env env=test mocha test/*.spec.js --timeout 15000 --exit",
     "ms_up": "node node_modules/db-migrate/bin/db-migrate up",
     "ms_reset": "node node_modules/db-migrate/bin/db-migrate reset",
     "coverage": "nyc --reporter html --reporter  text npm test"
