@@ -11,19 +11,36 @@ const createPaypal = {
 
 
     createPaypal: async ({t}) => {
-        return await Paypal.create({transaction: t});
+        if (t !== undefined) {
+            return await Paypal.create({transaction: t});
+        }
+        return await Paypal.create();
     },
 
     get: async ({paypal_id}) => {
-        console.log('paypal get init');
+
+        // console.log('paypal get init');
         let result = await Paypal.findAll({
             where: {id: Number(paypal_id)}
         });
         return result[0]
+
+
+        // try {
+        //     // console.log('paypal get init');
+        //     let result = await Paypal.findAll({
+        //         where: {id: Number(paypal_id)}
+        //     });
+        //     return result[0]
+        // }catch (e) {
+        //     console.log(e);
+        //     throw new Error(e);
+        // }
+
     },
 
     refund: async ({paypal_info}) => {
-        console.log('refund init');
+        // console.log('refund init');
         const data = {
             amount: {
                 total: JSON.parse(paypal_info.webhook).resource.amount.total,
@@ -47,8 +64,11 @@ const createPaypal = {
     },
 
     delete: async ({query, t}) => {
-        console.log('delete init');
-        return await Paypal.destroy({where: {id: Number(query.id)}, transaction: t})
+        if (t !== undefined) {
+            return await Paypal.destroy({where: {id: Number(query.id)}, transaction: t})
+        }
+        // console.log('delete init');
+        return await Paypal.destroy({where: {id: Number(query.id)}})
     }
 
 };

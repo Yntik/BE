@@ -16,7 +16,7 @@ exports.setup = function(options, seedLink) {
 
 exports.up = function (db)
 {
-    return db.addForeignKey('masters', 'cities', 'city_master',
+    return db.addForeignKey('masters', 'cities', 'master_city',
         {
             'idcity': 'id'
         },
@@ -28,7 +28,7 @@ exports.up = function (db)
 
 exports.down = function (db)
 {
-    return db.removeForeignKey('masters', 'city_master');
+    return db.removeForeignKey('masters', 'master_city');
 };
 
 exports._meta = {

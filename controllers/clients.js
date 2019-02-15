@@ -15,7 +15,6 @@ const clients = {
     },
 
     delete: async ({query}) => {
-        console.log('delete init');
         return await Clients.destroy({where: {id: Number(query.id)}})
     }
 

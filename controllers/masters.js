@@ -7,16 +7,18 @@ const Op = Sequelize.Op;
 const master = {
 
     getFreeMaster: async ({query}) => {
-
         let start = new Date(String(query.datetime));
+        let Timezone = start.getTimezoneOffset() / 60;
         let end = new Date(String(query.datetime));
-        end.setHours(end.getHours() + Number(query.size));
+        end.setHours(end.getHours() + Number(query.size) + Timezone);
+        start.setHours(start.getHours() + Timezone);
         let result;
         let subQuery;
         if (query.option === 'new') {
+            // console.log('free master for new order');
             subQuery = "SELECT master_id FROM orders WHERE start <= " + mysql.escape(start) + " AND " + mysql.escape(start) + " <= end" + "\n"
                 + "OR start <= " + mysql.escape(end) + " AND " + mysql.escape(end) + " <= end";
-            console.log('free master for new order');
+            // console.log('free master for new order');
             // sql = 'SELECT masters.id, masters.name, masters.surname, masters.idcity, masters.rating, cities.city\n'
             //     + "FROM masters\n"
             //     + "LEFT JOIN cities ON masters.idcity = cities.id\n"
@@ -26,6 +28,7 @@ const master = {
             //     + "OR start <= " + mysql.escape(end) + " AND " + mysql.escape(end) + " <= end )";
         }
         else {
+            // console.log('free master for old order');
             subQuery = "SELECT master_id FROM orders WHERE (start <= " + mysql.escape(start) + " AND " + mysql.escape(start) + " <= end" + "\n"
                 + "OR start <= " + mysql.escape(end) + " AND " + mysql.escape(end) + " <= end) AND NOT orders.id = " + mysql.escape(Number(query.option));
             // sql = 'SELECT masters.id, masters.name, masters.surname, masters.idcity, masters.rating, cities.city\n '
@@ -50,7 +53,6 @@ const master = {
                 ]
             },
         });
-        console.log('resultl2', result);
         return result;
     },
 
@@ -79,7 +81,6 @@ const master = {
     },
 
     delete: async ({query}) => {
-        console.log('delete init');
         return await Masters.destroy({where: {id: Number(query.id)}})
     }
 

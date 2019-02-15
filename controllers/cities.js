@@ -6,6 +6,7 @@ const cities = {
 
 
     create: async ({newcity}) => {
+        //for testing all systems on ec2
         return await Cities.build({ city: newcity }).save()
     },
 
@@ -14,7 +15,6 @@ const cities = {
     },
 
     delete: async ({query}) => {
-        console.log('delete init');
         return await Cities.destroy({ where: { id: Number(query.id) }})
     }
 };
