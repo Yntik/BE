@@ -47,11 +47,11 @@ else if (conf.get('env') === 'test') {
     conf.load({
         database: {
             "dev": {
-                "host": "icopoghru9oezxh8.cbetxkdyhwsb.us-east-1.rds.amazonaws.com",
-                "user": "c0np7i7uf18zhpc4",
-                "password": "r9h7mk9ta0875chh",
+                "host": "clockware.cggiayikq57u.eu-central-1.rds.amazonaws.com",
+                "user": "clockware",
+                "password": "passwordsecret",
                 "port": "3306",
-                "database": "j2o2ipmq4n3nmtzf",
+                "database": "clockware_test",
                 "driver": "mysql"
             }
         }
