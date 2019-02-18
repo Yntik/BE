@@ -56,7 +56,6 @@ else if (conf.get('env') === 'test') {
             }
         }
     });
-
 }
 const config = {
     BACK_END_PORT: 3000,

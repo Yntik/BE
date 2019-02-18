@@ -4,7 +4,7 @@
     "user": "clockware",
     "password": "passwordsecret",
     "port": "3306",
-    "database": "clockware",
+    "database": "clockware_test",
     "driver": "mysql"
   }
 }

@@ -391,8 +391,6 @@ describe('OrdersController', async () => {
                 datetime: '2019-02-17T23:00:00.000Z',
                 size: 1
             };
-
-            // expect(order.create.bind(order, {body: {...order}})).to.throw(new Error('Cannot read property size of undefined'));
             expect(() => order.create({body: {...order}}).to.throw('Cannot read property size of undefined'));
         });
     });
