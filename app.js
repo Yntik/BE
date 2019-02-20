@@ -10,7 +10,6 @@ const masters = require('./endpoints/masters');
 const orders = require('./endpoints/orders');
 const paypal = require('./endpoints/paypal');
 const logout = require('./endpoints/logout');
-const dev = require('./endpoints/dev');
 
 const app = express();
 const port = process.env.PORT || config.BACK_END_PORT;
@@ -29,7 +28,6 @@ app.use(bodyParser.urlencoded({
 
 app.use('/protected', protected);
 app.post('/logout',logout);
-app.get('/dev',dev);
 app.get('/cities',citys);
 app.get('/product',price);
 app.get('/free-master',masters);
