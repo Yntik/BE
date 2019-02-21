@@ -12,7 +12,7 @@ const citiesModel = require('../models/cities');
 
 describe('CitiesController', async () => {
     before('Remove all constraint', async () => {
-        // await test.removeConstraint();
+        //await test.removeConstraint();
         await test.destroy();
     });
     after('Add all constraint', async () => {

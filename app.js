@@ -12,14 +12,14 @@ const paypal = require('./endpoints/paypal');
 const logout = require('./endpoints/logout');
 
 const app = express();
-const port = process.env.PORT || config.BACK_END_PORT;
+const port = config.BACK_END_PORT;
 
 
 
 app.use(bodyParser.json());
 app.use(cors(config.CORS_OPTIONS));
 app.use(bodyParser.urlencoded({
-    extended: false
+	extended: false
 }));
 
 
