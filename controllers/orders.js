@@ -14,8 +14,6 @@ const Paypal = require('../models/paypal');
 const Orders = require('../models/orders');
 
 
-
-
 const order = {
 
     get: async (order_id) => {
@@ -264,7 +262,7 @@ async function insertclient({body, t}) {
             name: body.client,
             city_id: body.city
         },
-        transaction: t
+
     });
     if (result[1]) {
         return result[0];

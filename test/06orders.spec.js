@@ -29,34 +29,7 @@ describe('OrdersController', async () => {
     });
     describe('Get order function', async () => {
         beforeEach(async () => {
-            await ordersModel.destroy({
-                where: {},
-                truncate: true,
-            });
-            await mastersModel.destroy({
-                where: {},
-                truncate: true,
-            });
-            await citiesModel.destroy({
-                where: {},
-                truncate: true,
-            });
-            await productModel.destroy({
-                where: {},
-                truncate: true,
-            });
-            await paypalModel.destroy({
-                where: {},
-                truncate: true,
-            });
-            await citiesModel.destroy({
-                where: {},
-                truncate: true,
-            });
-            await clientsModel.destroy({
-                where: {},
-                truncate: true,
-            });
+            await test.destroy();
             await cities.create({newcity: 'Днепр'});
             await products.create({
                 body: {
@@ -110,34 +83,7 @@ describe('OrdersController', async () => {
     });
     describe('Create order function', async () => {
         beforeEach(async () => {
-            await ordersModel.destroy({
-                where: {},
-                truncate: true,
-            });
-            await mastersModel.destroy({
-                where: {},
-                truncate: true,
-            });
-            await citiesModel.destroy({
-                where: {},
-                truncate: true,
-            });
-            await productModel.destroy({
-                where: {},
-                truncate: true,
-            });
-            await paypalModel.destroy({
-                where: {},
-                truncate: true,
-            });
-            await citiesModel.destroy({
-                where: {},
-                truncate: true,
-            });
-            await clientsModel.destroy({
-                where: {},
-                truncate: true,
-            });
+            await test.destroy();
             await cities.create({newcity: 'Днепр'});
             await products.create({
                 body: {
@@ -210,34 +156,7 @@ describe('OrdersController', async () => {
     });
     describe('Edit order function', async () => {
         beforeEach(async () => {
-            await ordersModel.destroy({
-                where: {},
-                truncate: true,
-            });
-            await mastersModel.destroy({
-                where: {},
-                truncate: true,
-            });
-            await citiesModel.destroy({
-                where: {},
-                truncate: true,
-            });
-            await productModel.destroy({
-                where: {},
-                truncate: true,
-            });
-            await paypalModel.destroy({
-                where: {},
-                truncate: true,
-            });
-            await citiesModel.destroy({
-                where: {},
-                truncate: true,
-            });
-            await clientsModel.destroy({
-                where: {},
-                truncate: true,
-            });
+            await test.destroy();
             await cities.create({newcity: 'Днепр'});
             await products.create({
                 body: {
@@ -302,34 +221,7 @@ describe('OrdersController', async () => {
     });
     describe('Remove order function', async () => {
         beforeEach(async () => {
-            await ordersModel.destroy({
-                where: {},
-                truncate: true,
-            });
-            await mastersModel.destroy({
-                where: {},
-                truncate: true,
-            });
-            await citiesModel.destroy({
-                where: {},
-                truncate: true,
-            });
-            await productModel.destroy({
-                where: {},
-                truncate: true,
-            });
-            await paypalModel.destroy({
-                where: {},
-                truncate: true,
-            });
-            await citiesModel.destroy({
-                where: {},
-                truncate: true,
-            });
-            await clientsModel.destroy({
-                where: {},
-                truncate: true,
-            });
+            await test.destroy();
             await cities.create({newcity: 'Днепр'});
             await products.create({
                 body: {

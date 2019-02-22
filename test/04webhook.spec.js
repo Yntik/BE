@@ -19,10 +19,7 @@ describe('WebhookController', async () => {
     });
     describe('Store webhook function', async () => {
         beforeEach(async () => {
-            await webhookModel.destroy({
-                where: {},
-                truncate: true,
-            });
+            await test.destroy();
         });
         it('should store webhook', async () => {
             let body = {
@@ -44,6 +41,9 @@ describe('WebhookController', async () => {
         });
     });
     describe('Get webhook function', async () => {
+        beforeEach(async () => {
+            await test.destroy();
+        });
         let body = {
             about: 'store webhook',
             json: 'true'

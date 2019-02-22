@@ -3,6 +3,7 @@ const assert = chai.assert;    // Using Assert style
 const expect = chai.expect;    // Using Expect style
 const should = chai.should();  // Using Should style
 
+const db = require('../settings/sequelize');
 
 const test = require('./init_test');
 
@@ -20,9 +21,9 @@ describe('CitiesController', async () => {
     });
     describe('Get cities function', async () => {
         beforeEach(async () => {
-            await citiesModel.destroy({
-                where: {},
-                truncate: true,
+            await db.transaction(async (t) => {
+                await db.query('DELETE FROM cities;', {transaction: t});
+                await db.query('ALTER TABLE cities AUTO_INCREMENT = 1;', {transaction: t});
             });
             await cities.create({newcity: 'Львов'});
         });
@@ -35,9 +36,9 @@ describe('CitiesController', async () => {
     });
     describe('Create city function', async () => {
         beforeEach(async () => {
-            await citiesModel.destroy({
-                where: {},
-                truncate: true,
+            await db.transaction(async (t) => {
+                await db.query('DELETE FROM cities;', {transaction: t});
+                await db.query('ALTER TABLE cities AUTO_INCREMENT = 1;', {transaction: t});
             });
         });
         it('should create city name\'s Днепр', async () => {
@@ -48,9 +49,9 @@ describe('CitiesController', async () => {
     });
     describe('Edit city function', async () => {
         beforeEach(async () => {
-            await citiesModel.destroy({
-                where: {},
-                truncate: true,
+            await db.transaction(async (t) => {
+                await db.query('DELETE FROM cities;', {transaction: t});
+                await db.query('ALTER TABLE cities AUTO_INCREMENT = 1;', {transaction: t});
             });
             await cities.create({newcity: 'Львов'});
         });
@@ -63,9 +64,9 @@ describe('CitiesController', async () => {
     });
     describe('Remove city function', async () => {
         beforeEach(async () => {
-            await citiesModel.destroy({
-                where: {},
-                truncate: true,
+            await db.transaction(async (t) => {
+                await db.query('DELETE FROM cities;', {transaction: t});
+                await db.query('ALTER TABLE cities AUTO_INCREMENT = 1;', {transaction: t});
             });
             await cities.create({newcity: 'Львов'});
         });

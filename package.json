@@ -10,6 +10,7 @@
     "ms_up": "node node_modules/db-migrate/bin/db-migrate up --config ./database.json -e dev",
     "ms_up_test": "node node_modules/db-migrate/bin/db-migrate up --config ./database.json -e test",
     "ms_reset": "node node_modules/db-migrate/bin/db-migrate reset",
+    "ms_reset_test": "node node_modules/db-migrate/bin/db-migrate reset --config ./database.json -e test",
     "coverage": "nyc --reporter html --reporter  text npm test"
   },
   "nyc": {

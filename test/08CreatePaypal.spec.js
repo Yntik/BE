@@ -20,10 +20,7 @@ describe('CreatePaypalController', async () => {
     });
     describe('Create paypal function', async () => {
         beforeEach(async () => {
-            await paypalModel.destroy({
-                where: {},
-                truncate: true,
-            });
+            await test.destroy();
         });
         it('should create paypal', async () => {
             const result = await createPaypal.createPaypal({});
@@ -35,10 +32,7 @@ describe('CreatePaypalController', async () => {
     });
     describe('Get paypal function', async () => {
         beforeEach(async () => {
-            await paypalModel.destroy({
-                where: {},
-                truncate: true,
-            });
+            await test.destroy();
             await createPaypal.createPaypal({});
         });
         it('should show paypal', async () => {
@@ -57,10 +51,7 @@ describe('CreatePaypalController', async () => {
     });
     describe('Remove paypal function', async () => {
         beforeEach(async () => {
-            await paypalModel.destroy({
-                where: {},
-                truncate: true,
-            });
+            await test.destroy();
             await createPaypal.createPaypal({});
         });
         it('should remove paypal', async () => {

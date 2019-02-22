@@ -20,10 +20,7 @@ describe('ProductsController', async () => {
     });
     describe('Get product function', async () => {
         beforeEach(async () => {
-            await productModel.destroy({
-                where: {},
-                truncate: true,
-            });
+            await test.destroy();
             await products.create({body: {size: 1, price: '10'}});
         });
         it('should show product size 1, price 10', async () => {
@@ -36,10 +33,7 @@ describe('ProductsController', async () => {
     });
     describe('Get product by id function', async () => {
         beforeEach(async () => {
-            await productModel.destroy({
-                where: {},
-                truncate: true,
-            });
+            await test.destroy();
             await products.create({body: {size: 1, price: '10'}});
         });
         it('should show product by  id = 1', async () => {
@@ -53,10 +47,7 @@ describe('ProductsController', async () => {
     });
     describe('Create product function', async () => {
         beforeEach(async () => {
-            await productModel.destroy({
-                where: {},
-                truncate: true,
-            });
+            await test.destroy();
         });
         it('should create product', async () => {
             const result = await products.create({body: {size: 1, price: '10'}});
@@ -68,10 +59,7 @@ describe('ProductsController', async () => {
     });
     describe('Edit product function', async () => {
         beforeEach(async () => {
-            await productModel.destroy({
-                where: {},
-                truncate: true,
-            });
+            await test.destroy();
             await products.create({body: {size: 1, price: '10'}});
         });
         it('should edit product', async () => {
@@ -90,10 +78,7 @@ describe('ProductsController', async () => {
     });
     describe('Remove product function', async () => {
         beforeEach(async () => {
-            await productModel.destroy({
-                where: {},
-                truncate: true,
-            });
+            await test.destroy();
             await products.create({body: {size: 1, price: '10'}});
         });
         it('should remove product', async () => {

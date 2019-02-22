@@ -29,14 +29,7 @@ describe('MastersController', async () => {
     });
     describe('Get masters function', async () => {
         beforeEach(async () => {
-            await mastersModel.destroy({
-                where: {},
-                truncate: true,
-            });
-            await citiesModel.destroy({
-                where: {},
-                truncate: true,
-            });
+            await test.destroy();
             await cities.create({newcity: 'Львов'});
             await masters.create({
                 body:
@@ -60,14 +53,7 @@ describe('MastersController', async () => {
     });
     describe('Create master function', async () => {
         beforeEach(async () => {
-            await mastersModel.destroy({
-                where: {},
-                truncate: true,
-            });
-            await citiesModel.destroy({
-                where: {},
-                truncate: true,
-            });
+            await test.destroy();
             await cities.create({newcity: 'Львов'});
         });
         it('should create master', async () => {
@@ -90,14 +76,7 @@ describe('MastersController', async () => {
     });
     describe('Edit master function', async () => {
         beforeEach(async () => {
-            await mastersModel.destroy({
-                where: {},
-                truncate: true,
-            });
-            await citiesModel.destroy({
-                where: {},
-                truncate: true,
-            });
+            await test.destroy();
             await cities.create({newcity: 'Львов'});
             await cities.create({newcity: 'Днепр'});
             await masters.create({
@@ -128,14 +107,7 @@ describe('MastersController', async () => {
     });
     describe('Remove master function', async () => {
         beforeEach(async () => {
-            await mastersModel.destroy({
-                where: {},
-                truncate: true,
-            });
-            await citiesModel.destroy({
-                where: {},
-                truncate: true,
-            });
+            await test.destroy();
             await cities.create({newcity: 'Львов'});
             await masters.create({
                 body:
@@ -155,30 +127,7 @@ describe('MastersController', async () => {
     });
     describe('GerFreeMaster master function', async () => {
         beforeEach(async () => {
-            await ordersModel.destroy({
-                where: {},
-                truncate: true,
-            });
-            await mastersModel.destroy({
-                where: {},
-                truncate: true,
-            });
-            await citiesModel.destroy({
-                where: {},
-                truncate: true,
-            });
-            await productModel.destroy({
-                where: {},
-                truncate: true,
-            });
-            await paypalModel.destroy({
-                where: {},
-                truncate: true,
-            });
-            await citiesModel.destroy({
-                where: {},
-                truncate: true,
-            });
+            await test.destroy();
             await cities.create({newcity: 'Днепр'});
             await products.create({
                 body: {
