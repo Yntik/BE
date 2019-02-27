@@ -3,6 +3,12 @@
   "version": "1.0.0",
   "description": "RESTfull API service using express",
   "main": "app.js",
+  "eslintIgnore": [
+    "**/node_modules/**",
+    "**/test/**",
+    "**/coverage/**",
+    "**/migrations/**"
+  ],
   "scripts": {
     "start": "node app.js",
     "start:dev": "cross-env env=development node app.js",
@@ -11,7 +17,8 @@
     "ms_up_test": "node node_modules/db-migrate/bin/db-migrate up --config ./database.json -e test",
     "ms_reset": "node node_modules/db-migrate/bin/db-migrate reset",
     "ms_reset_test": "node node_modules/db-migrate/bin/db-migrate reset --config ./database.json -e test",
-    "coverage": "nyc --reporter html --reporter  text npm test"
+    "coverage": "nyc --reporter html --reporter  text npm test",
+    "lint": "node node_modules/eslint/bin/eslint.js --fix . "
   },
   "nyc": {
     "_comment": "Purpose of this part: to do code coverage within Mocha/Chai using Istanbul",
