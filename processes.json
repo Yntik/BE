@@ -1,0 +1,12 @@
+{
+      "apps" : [{
+        "name"        : "someExpress4App",
+        "script"      : "app.js",
+        "watch"       : true,
+		"ignore_watch": ["node_modules", ".idea", ".nyc_output", "coverage" ],
+		"watch_options": {
+			"usePolling": true,
+		},
+        "log_date_format"  : "YYYY-MM-DD HH:mm Z",
+      }]
+}
