@@ -4,7 +4,6 @@ const cities = {
 		return await Cities.findAll();
 	},
 
-
 	create: async ({newcity}) => {
 		//for testing all systems on ec2
 		return await Cities.build({ city: newcity }).save();
